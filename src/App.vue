@@ -1,14 +1,15 @@
 <script setup lang="ts">
-import HelloWorld from './components/HelloWorld.vue'
-import three from './components/three.vue'
+
 </script>
 
 <template>
-  <!-- <HelloWorld msg="Vite + Vue" /> -->
-  <three></three>
+  
+  <router-view></router-view>
 </template>
 
+
 <style scoped>
+
 .logo {
   height: 6em;
   padding: 1.5em;
