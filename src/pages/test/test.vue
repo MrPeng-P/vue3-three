@@ -15,7 +15,7 @@ export default defineComponent({
 <template>
   <div>
    
-    <el-button>123123</el-button>
+    <el-button>9999</el-button>
   </div>
 </template>
 <style scoped></style>
