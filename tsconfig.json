@@ -20,8 +20,10 @@
     }
 
   },
-  "include": ["src/**/*.ts", "src/**/*.d.ts", "src/**/*.tsx", "src/**/*.vue"],
+  "include": ["src/**/*.ts", "src/**/*.d.ts", "src/**/*.tsx", "src/**/*.vue", "src/**/*.jsx", ],
   "references": [{
-    "path": "./tsconfig.node.json"
+    "path": "./tsconfig.node.json",
+    // 在.tsx文件里支持JSX
+    "jsx": "preserve"
   }]
 }
