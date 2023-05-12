@@ -1,22 +1,48 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
+import AppAside from './asider/aisder.vue';
+import AppHeader from './header/header.vue'
 import asideBgImage from '../../../assets/images/aside/aside-bg.jpg'
+import { useRoute, useRouter } from 'vue-router';
+import allStore from '@/store'
+import { parse, stringify } from 'zipson'
+
+import { storeToRefs } from 'pinia';
 export default defineComponent({
+    components: {
+        AppAside,
+        AppHeader
+    },
     setup() {
-       
+        const router = useRouter()
+        const route = useRoute()
+        
+        console.log('%c ..........route,router.........','color:#31ef0e',route,router)
+        const { menu } = allStore()
+        const { menuData } = storeToRefs(menu)
+        const { changeMenu } = menu
+        menu.$subscribe((mutation, state) => {
+           console.log('%c ...........菜单变动啦........','color:#31ef0e',)
+        })
+        let menuList = menuData.value.menuList
+
         let modeType = ref(false) //导航栏显示位置
-        let modeList = ['aside', 'header', 'main', 'footer']
         let asiderData = reactive({//导航栏信息
             activeTextColor: '#ffd04b',
             bgColor: "rgba(0,0,0,0.2)",
             textColor: '#FFF',
             bgImage: asideBgImage
         })
+        let headFrom = reactive({ //头部布局
+            layoutList: [18, 6]
+        })
+
 
         return {
-            modeList,
             modeType,
             asiderData,
+            menuList,
+            headFrom
         }
     }
 })
@@ -26,42 +52,13 @@ export default defineComponent({
 <template>
     <div class="common-layout">
         <el-container>
-            <el-header v-if="modeType" class="aside-box">
-                <el-menu mode="horizontal" :router="true" active-text-color="#ffd04b" background-color="rgba(0,0,0,0)"
-                    class="el-menu-vertical-demo" default-active="2" text-color="#fff">
-                    <el-sub-menu index="index">
-                        <template #title>
-                            <el-icon>
-                                <location />
-                            </el-icon>
-                            <span>Navigator One</span>
-                        </template>
-                        <el-menu-item-group title="Group One">
-                            <el-menu-item index="home">home</el-menu-item>
-                            <el-menu-item index="test">test</el-menu-item>
-                        </el-menu-item-group>
-                    </el-sub-menu>
-                </el-menu>
-            </el-header>
             <el-aside width="200px" v-if="!modeType" class="aside-box">
-                <el-menu :router="true" :active-text-color="asiderData.activeTextColor"
-                    :background-color="asiderData.bgColor" class="el-menu-vertical-demo" default-active="2" :text-color="asiderData.textColor">
-                    <el-sub-menu index="index">
-                        <template #title>
-                            <el-icon>
-                                <location />
-                            </el-icon>
-                            <span>Navigator One</span>
-                        </template>
-                        <el-menu-item-group title="Group One">
-                            <el-menu-item index="home">home</el-menu-item>
-                            <el-menu-item index="test">test</el-menu-item>
-                        </el-menu-item-group>
-                    </el-sub-menu>
-                </el-menu>
+                <AppAside :menuList="menuList"></AppAside>
             </el-aside>
             <el-container>
-                <el-header>Header</el-header>
+                <el-header class="hearder-box">
+                    <AppHeader :headFrom="headFrom"></AppHeader>
+                </el-header>
                 <el-main>
                     <router-view v-slot="{ Component }">
                         <keep-alive>
@@ -71,7 +68,6 @@ export default defineComponent({
                         </keep-alive>
                     </router-view>
                 </el-main>
-                <el-footer>Footer</el-footer>
             </el-container>
 
         </el-container>
@@ -86,8 +82,12 @@ export default defineComponent({
 
 .aside-box {
     background: $default;
-    background: v-bind("'url('+asiderData.bgImage+')'");
+    background: v-bind("'url(' + asiderData.bgImage + ')'");
     background-position: center;
     color: #000;
+}
+
+.hearder-box {
+    background-color: black;
 }
 </style>

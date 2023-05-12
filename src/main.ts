@@ -8,6 +8,7 @@ import App from './App.vue'
 import './style.css'
 import './style/element/style.scss'
 import * as ElementPlusIconsVue from '@element-plus/icons-vue'
+import piniaPluginPersistedstate from 'pinia-plugin-persistedstate'
 
 
 const pinia = createPinia()
@@ -19,4 +20,6 @@ app.use(ElementPlus, {
     locale: zhCn,
 })
 app.use(pinia).use(router)
+pinia.use(piniaPluginPersistedstate);
+
 app.mount('#app')

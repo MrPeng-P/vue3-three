@@ -17,7 +17,8 @@
       "@/assets/*": ["src/assets/*"],
       "@*":["src/*"]
       
-    }
+    },
+    "allowJs": true,
 
   },
   "include": ["src/**/*.ts", "src/**/*.d.ts", "src/**/*.tsx", "src/**/*.vue", "src/**/*.jsx", ],
