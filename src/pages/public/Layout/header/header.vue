@@ -27,10 +27,14 @@ const AppHeader = defineComponent({
             console.log(list);
 
             return list.map((item: number, index: number) => {
+
                 if (index == list.length - 1) {
                     console.log(index);
                     
                     return <el-col span={item}><AppUser></AppUser></el-col>
+                }else if(index==0){
+                    return <el-col span={item}><svg-icon name={'edit'} size="20px"></svg-icon> <el-icon size={20}><Edit /></el-icon></el-col>
+                    
                 } else {
                     return <el-col span={item}></el-col>
                 }

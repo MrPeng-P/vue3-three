@@ -32,7 +32,7 @@ export default defineComponent({
             bgImage: asideBgImage
         })
         let headFrom = reactive({ //头部布局
-            layoutList: [18, 6]
+            layoutList: [2,16, 6]
         })
 
 
@@ -50,7 +50,7 @@ export default defineComponent({
 <template>
     <div class="common-layout">
         <el-container>
-            <el-aside width="200px" v-if="!modeType" class="aside-box">
+            <el-aside  v-if="!modeType" class="aside-box">
                 <AppAside :menuList="menuList"></AppAside>
             </el-aside>
             <el-container>
@@ -79,6 +79,7 @@ export default defineComponent({
 }
 
 .aside-box {
+    width: auto;
     background: $default;
     background: v-bind("'url(' + asiderData.bgImage + ')'");
     background-position: center;

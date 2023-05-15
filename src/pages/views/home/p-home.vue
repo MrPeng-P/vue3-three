@@ -17,7 +17,7 @@ export default defineComponent({
 <template>
   <div>
    
-    <el-button>123123</el-button>
+    <el-button>  <svg-icon name="HomeFilled" size="20px"></svg-icon>  <el-icon><HomeFilled /></el-icon>123123</el-button>
   </div>
 </template>
 <style scoped></style>

@@ -5,7 +5,6 @@ import Components from 'unplugin-vue-components/vite'
 import { ElementPlusResolver } from 'unplugin-vue-components/resolvers'
 import { loadEnv } from 'vite'
 import path from 'path'
-
 import Icons from 'unplugin-icons/vite'
 import IconsResolver from 'unplugin-icons/resolver'
 const pathSrc = path.resolve(__dirname, 'src')
@@ -43,7 +42,7 @@ export default ((mode) => {
           // Auto register icon components
           // 自动注册图标组件
           IconsResolver({
-            enabledCollections: ['ep'],
+            enabledCollections: ['Operation'],
           }),
           // Auto register Element Plus components
           // 自动导入 Element Plus 组件
