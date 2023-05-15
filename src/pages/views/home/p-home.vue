@@ -1,7 +1,7 @@
 <script lang="ts">
 import { defineComponent, ref, onMounted, reactive, toRefs } from 'vue'
 export default defineComponent({
-  
+  name:"首页",
   setup() {
    
     

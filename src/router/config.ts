@@ -1,7 +1,7 @@
 
-import { storeToRefs } from 'pinia'
-import { routerConfig } from './router'
+import { routerConfig, routes } from './router'
 import allStore from '@/store'
+
 
 class intercept {
     constructor() {
@@ -10,11 +10,13 @@ class intercept {
     // before拦截
     static setRouterBefore() {
         routerConfig.beforeEach(async (to, from, next) => {
-            const { menu } = allStore()
-            const { menuData } = storeToRefs(menu)
-            routerConfig.addRoute('index', menuData.value.menuList)
-            routerConfig.replace(routerConfig.currentRoute.value.fullPath)
-            console.log(routerConfig.getRoutes());
+            console.log('%c ..........to.path.........','color:#31ef0e',to.path)
+            if(to.path='/login'){
+                const store = allStore()
+                const { menu } = store
+                const { changeMenu } = menu
+                changeMenu(routes[0])
+            }
             next()
         })
     }
@@ -39,3 +41,5 @@ intercept.setRouterBefore()
 
 
 export default routerConfig
+
+

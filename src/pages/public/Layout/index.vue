@@ -5,7 +5,6 @@ import AppHeader from './header/header.vue'
 import asideBgImage from '../../../assets/images/aside/aside-bg.jpg'
 import { useRoute, useRouter } from 'vue-router';
 import allStore from '@/store'
-import { parse, stringify } from 'zipson'
 
 import { storeToRefs } from 'pinia';
 export default defineComponent({
@@ -20,11 +19,10 @@ export default defineComponent({
         console.log('%c ..........route,router.........','color:#31ef0e',route,router)
         const { menu } = allStore()
         const { menuData } = storeToRefs(menu)
-        const { changeMenu } = menu
         menu.$subscribe((mutation, state) => {
            console.log('%c ...........菜单变动啦........','color:#31ef0e',)
         })
-        let menuList = menuData.value.menuList
+        let menuList = menuData.value.menuList.children
 
         let modeType = ref(false) //导航栏显示位置
         let asiderData = reactive({//导航栏信息

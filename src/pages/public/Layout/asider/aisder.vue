@@ -63,7 +63,7 @@ const AppAside = defineComponent({
         
         //路由跳转
         const handleSelect = (key: string, keyPath: string[]) => {
-            const path = `/${keyPath.join('/')}`
+            const path = key
             router.push({
                 path,
             })

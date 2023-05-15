@@ -1,3 +1,5 @@
+
+ 
 import { userStore } from './user/user'
 import { menuStore } from './menu/menu'
 
@@ -7,5 +9,4 @@ import { menuStore } from './menu/menu'
         menu:menuStore()
     }
 }
-
 export default allStore
