@@ -46,7 +46,7 @@ export default ((mode) => {
           }),
           // Auto register Element Plus components
           // 自动导入 Element Plus 组件
-          ElementPlusResolver(),
+          ElementPlusResolver({importStyle: "sass"}),
         ],
 
         dts: path.resolve(pathSrc, 'components.d.ts'),
@@ -55,12 +55,8 @@ export default ((mode) => {
       Icons({
         autoInstall: true,
       }),
-      AutoImport({
-        resolvers: [ElementPlusResolver()],
-      }),
-      Components({
-        resolvers: [ElementPlusResolver()],
-      }),
+    
+    
     ],
     // 别名配置
     resolve: {
@@ -68,13 +64,13 @@ export default ((mode) => {
         // 键必须以斜线开始和结束
         '@/assets': path.resolve(__dirname, "..", "src/assets"),
         '@': path.resolve(__dirname, './src'),
-
+        '~/': `${path.resolve(__dirname, 'src')}/`,
       },
     },
     css: {
       preprocessorOptions: {
         scss: {
-          additionalData: `@import "./src/style/mixin.scss";`
+          additionalData: `@use "~/style/element/index.scss" as *;`
         }
       }
     },

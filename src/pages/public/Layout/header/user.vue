@@ -34,17 +34,18 @@ export default AppUser
     display: flex;
     justify-content: flex-end;
     align-items: center;
-    min-width: 60px;
-    min-height: 60px;
+    min-width: $header-height;
+    min-height: $header-height;
     .avator {
     display: flex;
     justify-content: center;
     align-items: center;
-    width: 50px;
-    height: 50px;
+    width: $header-height*0.7;
+    height: $header-height*0.7;
     background-color: #fff4d8;
     border-radius: 50%;
     font-weight: 600;
+    font-size: 12px;
     cursor: pointer;
 }
 }

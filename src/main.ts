@@ -5,7 +5,7 @@ import zhCn from 'element-plus/dist/locale/zh-cn.mjs'
 import router from './router/config'
 import App from './App.vue'
 import './style.css'
-import './style/element/style.scss'
+// import './style/element/index.scss'
 import store from './store/config'
 import * as ElementPlusIconsVue from '@element-plus/icons-vue'
 import piniaPluginPersistedstate from 'pinia-plugin-persistedstate'
@@ -22,4 +22,4 @@ app.use(ElementPlus, {
 app.use(store).use(router)
 store.use(piniaPluginPersistedstate);
 
-app.mount('#app')
+app.mount('#app')       

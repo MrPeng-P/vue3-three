@@ -38,11 +38,10 @@ const AppAside = defineComponent({
         const getMenu = (menuList: any) => {
             return menuList.map((item: any) => {
                 if (item.children && item.children.length > 0 && !item.hidden) {
-                    console.log('%c ..........item.meta.........', 'color:#31ef0e', item.meta)
-
                     const slots = {
+
                         title: () => (
-                            <span class="flex flex-center">
+                            <div class={'subitem'}>
                                 {item.meta.icon ? (
                                     <el-icon><tk-icon showIcon={item.meta.icon} type="show"></tk-icon></el-icon>
 
@@ -50,7 +49,7 @@ const AppAside = defineComponent({
                                     ''
                                 )}
                                 <span class="title">{item.meta.title}</span>
-                            </span>
+                            </div>
                         ),
                     }
                     return (
@@ -111,5 +110,13 @@ export default AppAside
 
 .title {
     margin-left: 10px;
+}
+
+.el-tooltip__trigger {
+    .subitem {
+        span {
+            display: none;
+        }
+    }
 }
 </style>

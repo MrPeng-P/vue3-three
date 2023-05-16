@@ -15,12 +15,11 @@ export default defineComponent({
     setup() {
         const router = useRouter()
         const route = useRoute()
-        
-        console.log('%c ..........route,router.........','color:#31ef0e',route,router)
+
         const { menu } = allStore()
         const { menuData } = storeToRefs(menu)
         menu.$subscribe((mutation, state) => {
-           console.log('%c ...........菜单变动啦........','color:#31ef0e',)
+            console.log('%c ...........菜单变动啦........', 'color:#31ef0e',)
         })
         let menuList = menuData.value.menuList.children
 
@@ -32,15 +31,21 @@ export default defineComponent({
             bgImage: asideBgImage
         })
         let headFrom = reactive({ //头部布局
-            layoutList: [2,16, 6]
+            layoutList: [2, 16, 6],
         })
-
-
+        let isCollapse = ref(false)
+        const allMethods = {
+            changeCollapse: (item?: any) => {
+                isCollapse.value = !isCollapse.value
+            }
+        }
         return {
             modeType,
             asiderData,
             menuList,
-            headFrom
+            isCollapse,
+            headFrom,
+            ...allMethods
         }
     }
 })
@@ -50,12 +55,13 @@ export default defineComponent({
 <template>
     <div class="common-layout">
         <el-container>
-            <el-aside  v-if="!modeType" class="aside-box">
-                <AppAside :menuList="menuList"></AppAside>
+            <el-aside v-if="!modeType" class="aside-box">
+                <div class="logo"> 后台管理</div>
+                <AppAside class="app-aside" :menuList="menuList" :isCollapse="isCollapse"></AppAside>
             </el-aside>
             <el-container>
                 <el-header class="hearder-box">
-                    <AppHeader :headFrom="headFrom"></AppHeader>
+                    <AppHeader :headFrom="headFrom" :isCollapse="isCollapse" @changeCollapse="changeCollapse"></AppHeader>
                 </el-header>
                 <el-main>
                     <router-view v-slot="{ Component }">
@@ -69,7 +75,7 @@ export default defineComponent({
             </el-container>
 
         </el-container>
-
+        
     </div>
 </template>
 <style scoped lang="scss">
@@ -87,6 +93,46 @@ export default defineComponent({
 }
 
 .hearder-box {
-    background-color: black;
+    background-color: $header-bg;
+}
+
+.logo {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: $header-height;
+    background-color: $header-bg;
+    color: #fff;
+    font-weight: 600;
+}
+
+*::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+    background-color: lighten($default, 12);
+
+}
+
+*::-webkit-scrollbar-track {
+    -webkit-border-radius: 3px;
+    -moz-border-radius: 3px;
+    border-radius: 3px;
+}
+
+*::-webkit-scrollbar-thumb {
+    background-color: darken($default, 12);
+
+    -webkit-border-radius: 3px;
+    -moz-border-radius: 3px;
+    border-radius: 3px;
+}
+
+.aside-box {
+    overflow: hidden;
+
+    .app-aside {
+        height: 100%;
+        overflow-y: auto;
+    }
 }
 </style>
