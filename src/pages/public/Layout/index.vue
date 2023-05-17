@@ -93,7 +93,8 @@ export default defineComponent({
 }
 
 .hearder-box {
-    background-color: $header-bg;
+    // background-color: $header-bg;
+    border-bottom:2px solid $p-border-color;
 }
 
 .logo {

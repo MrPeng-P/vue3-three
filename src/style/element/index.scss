@@ -1,44 +1,20 @@
-
 @use 'sass:math';
 @use 'sass:map';
-$default:#545c64;
-$scrollbar:#0ad4f8;
-$header-bg:#000;
-
-$header-height:50px;
-
-@forward 'element-plus/theme-chalk/src/common/var.scss' with (
-   
-    $header:(
-        'height': $header-height,
-        'padding': 0 10px 0 0,
-        )
-);
+@use './style.scss';
 
 
-$colors: () !default;
-$colors: map.deep-merge(
-  (
-    'white': #ffffff,
-    'black': #000000,
-    'primary': (
-      'base': green,
-    ),
-    'success': (
-      'base': #67c23a,
-    ),
-    'warning': (
-      'base': #e6a23c,
-    ),
-    'danger': (
-      'base': #f56c6c,
-    ),
-    'error': (
-      'base': #f56c6c,
-    ),
-    'info': (
-      'base': #909399,
-    ),
-  ),
-  $colors
-);
+$default: #545c64;
+$scrollbar: #0ad4f8;
+$header-bg: #000;
+
+$header-height: 50px;
+$p-border-color: var(--p-border-color);
+@forward 'element-plus/theme-chalk/src/common/var.scss' with ($header: ('height': $header-height,
+        'padding': 0 10px 0 10px,
+    ));
+:root{
+    --p-border-color:#eee
+}
+html.dark{
+    --p-border-color:#666
+}

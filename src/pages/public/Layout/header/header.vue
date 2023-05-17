@@ -71,6 +71,5 @@ export default AppHeader
     .collapse-box{
         display: flex;
         align-items: center;
-        color: #fff;
     }
 </style>

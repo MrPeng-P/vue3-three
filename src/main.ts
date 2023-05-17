@@ -10,6 +10,8 @@ import store from './store/config'
 import * as ElementPlusIconsVue from '@element-plus/icons-vue'
 import piniaPluginPersistedstate from 'pinia-plugin-persistedstate'
 
+import 'element-plus/theme-chalk/dark/css-vars.css'
+
 const app = createApp(App)
 
 

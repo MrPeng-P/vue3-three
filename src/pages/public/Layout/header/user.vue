@@ -17,7 +17,7 @@ const AppUser = defineComponent({
         const {userInfo}= user
         
         const userDom = () => {
-            return <div class={'avator'}>{userInfo.name}</div>
+            return <div class={'avator'}><el-avatar> {userInfo.name} </el-avatar></div>
         }
         return () => (
             <div class={'use-box'}>{userDom()}</div>
@@ -40,8 +40,6 @@ export default AppUser
     display: flex;
     justify-content: center;
     align-items: center;
-    width: $header-height*0.7;
-    height: $header-height*0.7;
     background-color: #fff4d8;
     border-radius: 50%;
     font-weight: 600;
