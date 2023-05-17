@@ -2,15 +2,18 @@
 import { defineComponent } from 'vue';
 import AppAside from './asider/aisder.vue';
 import AppHeader from './header/header.vue'
+import AppMeta from './header/appMeta.vue'
 import asideBgImage from '../../../assets/images/aside/aside-bg.jpg'
 import { useRoute, useRouter } from 'vue-router';
 import allStore from '@/store'
-
+import configuration from './components/configuration.vue'
 import { storeToRefs } from 'pinia';
 export default defineComponent({
     components: {
         AppAside,
-        AppHeader
+        AppHeader,
+        configuration,
+        AppMeta
     },
     setup() {
         const router = useRouter()
@@ -18,9 +21,7 @@ export default defineComponent({
 
         const { menu } = allStore()
         const { menuData } = storeToRefs(menu)
-        menu.$subscribe((mutation, state) => {
-            console.log('%c ...........菜单变动啦........', 'color:#31ef0e',)
-        })
+     
         let menuList = menuData.value.menuList.children
 
         let modeType = ref(false) //导航栏显示位置
@@ -31,12 +32,17 @@ export default defineComponent({
             bgImage: asideBgImage
         })
         let headFrom = reactive({ //头部布局
-            layoutList: [2, 16, 6],
+            layoutList: [{span:2,name:'collapse'},{span:0,name:'breadcrumb'},{span:16,name:'any'},{span:6,name:'appUser'}],
         })
         let isCollapse = ref(false)
+        let openSelect = ref(false)
         const allMethods = {
             changeCollapse: (item?: any) => {
                 isCollapse.value = !isCollapse.value
+            },
+            // 开启/关闭 设置
+            changeSet:()=>{
+                openSelect.value=!openSelect.value
             }
         }
         return {
@@ -45,6 +51,7 @@ export default defineComponent({
             menuList,
             isCollapse,
             headFrom,
+            openSelect,
             ...allMethods
         }
     }
@@ -63,19 +70,22 @@ export default defineComponent({
                 <el-header class="hearder-box">
                     <AppHeader :headFrom="headFrom" :isCollapse="isCollapse" @changeCollapse="changeCollapse"></AppHeader>
                 </el-header>
+                <AppMeta></AppMeta>
+
                 <el-main>
                     <router-view v-slot="{ Component }">
                         <keep-alive>
-                            <transition name="fade">
                                 <component :is="Component" />
-                            </transition>
                         </keep-alive>
                     </router-view>
+                    <div class="select-btn" @click="changeSet"><Setting style="width: 1em; height: 1em; " /></div>
+                        <configuration  :openSelect="openSelect" @changeSet="changeSet"></configuration>
+                      
                 </el-main>
             </el-container>
 
         </el-container>
-        
+
     </div>
 </template>
 <style scoped lang="scss">
@@ -94,7 +104,21 @@ export default defineComponent({
 
 .hearder-box {
     // background-color: $header-bg;
-    border-bottom:2px solid $p-border-color;
+    border-bottom: 2px solid $p-border-color;
+}
+
+.select-btn{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: fixed;
+    top: 50%;
+    right:5px;
+    width: 36px;
+    height: 36px;
+    border-radius: 10px;
+    font-size: 18px;
+    background-color: var(--el-color-primary);
 }
 
 .logo {

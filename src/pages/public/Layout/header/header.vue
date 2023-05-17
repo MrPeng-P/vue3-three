@@ -1,4 +1,5 @@
 <script lang="tsx" name="AppHeader">
+import AppBreadcrumb from './breadcrumb.vue'
 import AppUser from './user.vue'
 import tkIcon from '@/components/tk-icon/tk-icon'
 
@@ -8,7 +9,8 @@ interface head {
 const AppHeader = defineComponent({
     components: {
         AppUser,
-        tkIcon
+        tkIcon,
+        AppBreadcrumb
     },
     props: {
 
@@ -34,18 +36,24 @@ const AppHeader = defineComponent({
         //头部生成
         const getHeader = (list: number[]) => {
 
-            return list.map((item: number, index: number) => {
-
-                if (index == list.length - 1) {
-                    console.log(index);
-
-                    return <el-col span={item}><AppUser></AppUser></el-col>
-                } else if (index == 0) {
-                    return <el-col span={item} onClick={taggerCollapse}> <el-icon size={20} class="collapse-box"><tk-icon  showIcon={props.isCollapse ? 'Expand' : 'Fold'} type="show"></tk-icon></el-icon></el-col>
-
-                } else {
-                    return <el-col span={item}></el-col>
+            return list.map((item: any, index: number) => {
+                let ele:any=null
+                switch(item.name){
+                    case 'collapse':
+                        ele= <el-icon size={20} class="collapse-box" onClick={taggerCollapse}><tk-icon  showIcon={props.isCollapse ? 'Expand' : 'Fold'} type="show"></tk-icon></el-icon>
+                    break
+                    case 'breadcrumb':
+                        ele=<AppBreadcrumb></AppBreadcrumb>
+                    break
+                    case 'any':
+                        ele
+                    break
+                    case 'appUser':
+                        ele=<AppUser></AppUser>
+                    break
                 }
+                return <el-col span={item.span}>{ele}</el-col>
+              
 
             })
         }

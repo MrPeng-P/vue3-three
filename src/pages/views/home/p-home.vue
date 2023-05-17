@@ -11,7 +11,7 @@ export default defineComponent({
       valueLight: 'light',
     })
     const toggleDark = useToggle(isDark)
-    console.log('%c ..........isDark.........', 'color:#31ef0e', toggleDark)
+
     onMounted(() => {
     })
     return {
@@ -24,7 +24,6 @@ export default defineComponent({
 
 <template>
   <div>
-    <el-button type="primary" @click="toggleDark()">Primary</el-button>
     <el-button> <svg-icon name="HomeFilled" size="20px"></svg-icon> <el-icon>
         <HomeFilled />
       </el-icon>123123</el-button>

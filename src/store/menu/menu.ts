@@ -15,7 +15,6 @@ export const menuStore = defineStore('menu', () => {
      * @date 2023-05-12 16:11:12
     */
     function changeMenu(list: any) {
-        console.log('%c ..........list.........','color:#31ef0e',list)
         menuData.menuList = list
     }
     return {

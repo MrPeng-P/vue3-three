@@ -102,7 +102,6 @@ function createRouterFromFile() {
 
     const children: any = []
     const modules = import.meta.glob('../pages/views/*/*')
-    console.log('%c ..........modules.........', 'color:#31ef0e', modules)
     const keys = Object.keys(modules)
     for (let i = 0; i < keys.length; i++) {
         let component = modules[keys[i]]

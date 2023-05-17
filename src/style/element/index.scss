@@ -9,12 +9,44 @@ $header-bg: #000;
 
 $header-height: 50px;
 $p-border-color: var(--p-border-color);
-@forward 'element-plus/theme-chalk/src/common/var.scss' with ($header: ('height': $header-height,
+$p-switch-icon-color:var(--p-switch-icon-color);
+@forward 'element-plus/theme-chalk/src/common/var.scss' with (
+    $header: ('height': $header-height,
         'padding': 0 10px 0 10px,
-    ));
+    )
+);
 :root{
-    --p-border-color:#eee
+    --p-border-color:#eee;
+    --p-switch-icon-color:#fff;
 }
 html.dark{
-    --p-border-color:#666
+    --p-border-color:#666;
+    --p-switch-icon-color:yellow;
+}
+
+
+
+
+*::-webkit-scrollbar {
+    width: 5px;
+    height: 5px;
+    background-color: lighten($default, 40);
+    opacity: 0.1;
+
+
+}
+
+*::-webkit-scrollbar-track {
+    -webkit-border-radius: 3px;
+    -moz-border-radius: 3px;
+    border-radius: 3px;
+}
+
+*::-webkit-scrollbar-thumb {
+    background-color: lighten($default, 2);
+
+    -webkit-border-radius: 3px;
+    -moz-border-radius: 3px;
+    border-radius: 3px;
+    opacity: 0.3;
 }

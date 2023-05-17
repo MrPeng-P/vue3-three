@@ -18,7 +18,6 @@ function dealMenu(){
   const json=localStorage.getItem('menu')
   if(json){
     const menuArr=parse(json).menuData.menuList.children
-  console.log('%c ..........json.........','color:#31ef0e',menuArr)
 
     arrRes=menuArr.map((v0:any)=>{
       let children:any=[]
