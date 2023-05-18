@@ -6,7 +6,7 @@
 $default: #545c64;
 $scrollbar: #0ad4f8;
 $header-bg: #000;
-
+$primary:'#409eff';
 $header-height: 50px;
 $p-border-color: var(--p-border-color);
 $p-switch-icon-color:var(--p-switch-icon-color);
@@ -14,6 +14,7 @@ $p-switch-icon-color:var(--p-switch-icon-color);
     $header: ('height': $header-height,
         'padding': 0 10px 0 10px,
     )
+   
 );
 :root{
     --p-border-color:#eee;

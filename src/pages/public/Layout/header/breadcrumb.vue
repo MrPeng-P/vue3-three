@@ -11,7 +11,6 @@ const AppBreadcrumb = defineComponent({
     },
     setup(props) {
         const route=useRoute()
-        console.log('%c ..........route.........','color:#31ef0e',route)
         return () => (
             <div class={'breadcrumb-box'}></div>
 

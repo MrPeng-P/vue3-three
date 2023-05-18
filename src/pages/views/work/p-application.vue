@@ -5,7 +5,7 @@ export default {
 </script>
 
 <template>
-应用
+<el-button>应用</el-button>
 </template>
 <style scoped>
 

@@ -1,12 +1,12 @@
 <script lang="tsx" name="AppUser">
-import { useRoute } from 'vue-router';
+import { Router, useRouter } from 'vue-router';
 import allStore from '@/store';
 import tkIcon from '@/components/tk-icon/tk-icon'
-
+import { metaItem } from '@/types/meta'
 
 const AppMeta = defineComponent({
     components: {
-      
+
         tkIcon
     },
     props: {
@@ -15,15 +15,33 @@ const AppMeta = defineComponent({
         }
     },
     setup(props) {
-        const route = useRoute()
+        const router: Router = useRouter()
         const { meta } = allStore()
         const { deleteMeta, metaData } = meta
-        const menuEle = (metaList: any) => {
-            return metaList.map((item: any) => {
-                return (<div class={'meta-item'}><el-icon class={'logo'}><tk-icon showIcon={item.meta.icon} type="show"></tk-icon></el-icon> {item.meta.title} <el-icon class={'close'}><tk-icon  showIcon={'Close'} type="show"></tk-icon></el-icon>   </div>)
+        let activeMeta: any = ref('/home')
+        const deleteMenthod = (e: any, item: metaItem, index: number,) => {
+            e.stopPropagation()
+
+            if (metaData.metaList.length > 1) {
+                deleteMeta(item, index)
+                changeMeta(metaData.metaList[index])
+            } else {
+                if (item.fullPath != '/home') {
+                    deleteMeta(item, index)
+                    router.push('/home')
+                }
+
+            }
+        }
+        const changeMeta = (val: metaItem) => {
+            activeMeta.value = val.fullPath
+            router.push(val.fullPath)
+        }
+        const menuEle = (metaList: metaItem[]) => {
+            return metaList.map((item: metaItem, index: number) => {
+                return (<div class={'meta-item ' + (activeMeta.value == item.fullPath ? 'active-meta' : '')} onClick={e => changeMeta(item)}><el-icon class={'logo'}><tk-icon showIcon={item.meta.icon} type="show"></tk-icon></el-icon> {item.meta.title} <el-icon onClick={(e: any) => { deleteMenthod(e, item, index) }} class={'close'}><tk-icon showIcon={'Close'} type="show"></tk-icon></el-icon>   </div>)
             })
         }
-        console.log('%c ..........meta.........', 'color:#31ef0e', meta, metaData)
         return () => (
             <div class={'meta-box'}>
                 <div class={'meta-box-set'}>{menuEle(metaData.metaList)}</div>
@@ -45,11 +63,14 @@ export default AppMeta
     height: 40px;
     border-bottom: 1px solid $p-border-color;
     cursor: pointer;
+
     .meta-box-set {
         display: flex;
         overflow-x: auto;
+        padding: 0 10px;
 
         .meta-item {
+
             display: flex;
             align-items: center;
             flex-grow: 0;
@@ -60,15 +81,22 @@ export default AppMeta
             padding: 5px 5px;
             font-size: 12px;
             border: 1px solid $p-border-color;
-            .logo{
+            border-radius: 10%;
+
+            .logo {
                 font-size: 10px;
                 margin-right: 5px;
             }
-            .close{
+
+            .close {
                 margin-left: 5px;
             }
         }
+
+        .active-meta {
+            background-color: var(--el-color-primary);
+            color: var(--el-color-white);
+        }
     }
 
-}
-</style>
+}</style>

@@ -1,27 +1,27 @@
 import { defineStore } from 'pinia'
 import { parse, stringify } from 'zipson'
+import { metaItem, metaData } from '@/types/meta';
 export const metaStore = defineStore('meta', () => {
-    let metaData: any = reactive({
+    let metaData: metaData = reactive({
         metaList: []
     })
-   
-    const allMeta={
+
+    const allMeta = {
         //添加
-        addMeta:(item:any)=>{
-            const data=metaData.metaList.some((val:any)=>{return val.meta.title==item.meta.title})
-            console.log('%c ..........item.........','color:#31ef0e',metaData.metaList,data)
-            if(!data){
+        addMeta: (item: metaItem) => {
+            const data = metaData.metaList.some((val: metaItem) => { return val.meta.title == item.meta.title })
+            if (!data) {
                 metaData.metaList.push(item)
             }
-            
-          
+
+
         },
         //删除
-        deleteMeta:()=>{
-
+        deleteMeta: (item: metaItem, index: number) => {
+            metaData.metaList.splice(index, 1);
         }
     }
-   
+
     return {
         metaData,
         ...allMeta
@@ -32,7 +32,7 @@ export const metaStore = defineStore('meta', () => {
         paths: ['metaData.metaList'],
         storage: sessionStorage,
         debug: true,
-      
+
         serializer: {
             deserialize: parse,
             serialize: stringify,

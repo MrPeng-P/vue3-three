@@ -9,7 +9,6 @@ class intercept {
     // before拦截
     static setRouterBefore() {
         routerConfig.beforeEach(async (to, from, next) => {
-            console.log('%c ..........routerConfig.........', 'color:#31ef0e', routerConfig.getRoutes())
             if (to.path = '/login') {
                 const store = allStore()
 
@@ -31,7 +30,6 @@ class intercept {
     // after触发
     static setRouterAfter() {
         routerConfig.afterEach(async (to, from, next) => {
-            console.log('%c ..........to,from.........','color:#31ef0e',to,from)
             if(to.fullPath!==from.fullPath){
                 const store = allStore()
                 const { meta } = store
