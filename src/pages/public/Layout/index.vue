@@ -8,6 +8,7 @@ import { useRoute, useRouter } from 'vue-router';
 import allStore from '@/store'
 import configuration from './components/configuration.vue'
 import { storeToRefs } from 'pinia';
+import { routerConfig ,routes} from '@/router/router';
 export default defineComponent({
     components: {
         AppAside,
@@ -16,14 +17,21 @@ export default defineComponent({
         AppMeta
     },
     setup() {
+        const routeList:any=routes[0].children
         const router = useRouter()
         const route = useRoute()
-
+        // 不许缓存 暂定 操作
+        let excludeList:any = reactive([])
+        routeList.map((item:any)=>{
+            if(item.path.includes('operate')){
+                  excludeList.push(item.path.split('p-')[1])
+            }
+            return
+        })
         const { menu } = allStore()
         const { menuData } = storeToRefs(menu)
      
-        let menuList = menuData.value.menuList.children
-
+        let menuList = menuData.value.menuList
         let modeType = ref(false) //导航栏显示位置
         let asiderData = reactive({//导航栏信息
             activeTextColor: '#ffd04b',
@@ -51,6 +59,7 @@ export default defineComponent({
             menuList,
             isCollapse,
             headFrom,
+            excludeList,
             openSelect,
             ...allMethods
         }
@@ -74,7 +83,7 @@ export default defineComponent({
 
                 <el-main>
                     <router-view v-slot="{ Component }">
-                        <keep-alive>
+                        <keep-alive :exclude="excludeList">
                                 <component :is="Component" />
                         </keep-alive>
                     </router-view>
@@ -119,6 +128,7 @@ export default defineComponent({
     border-radius: 10px;
     font-size: 18px;
     background-color: var(--el-color-primary);
+    z-index: 1000;
 }
 
 .logo {

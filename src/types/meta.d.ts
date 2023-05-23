@@ -10,5 +10,6 @@ export interface metaItem {
 }
 
 export interface metaData{
-    metaList:metaItem[]
+    metaList:metaItem[],
+    activeMeta:String
 }

@@ -7,6 +7,7 @@ import { loadEnv } from 'vite'
 import path from 'path'
 import Icons from 'unplugin-icons/vite'
 import IconsResolver from 'unplugin-icons/resolver'
+import analyze from "rollup-plugin-analyzer"
 const pathSrc = path.resolve(__dirname, 'src')
 import vueJsx from '@vitejs/plugin-vue-jsx'
 
@@ -58,6 +59,11 @@ export default ((mode) => {
     
     
     ],
+    build: {
+      rollupOptions: {
+        plugins: [analyze()]
+      },
+    },
     // 别名配置
     resolve: {
       alias: {

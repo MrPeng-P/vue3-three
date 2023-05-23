@@ -17,22 +17,20 @@ function dealMenu(){
   let arrRes=[]
   const json=localStorage.getItem('menu')
   if(json){
-    const menuArr=parse(json).menuData.menuList.children
-
+    const menuArr=parse(json).menuData.menuList
     arrRes=menuArr.map((v0:any)=>{
       let children:any=[]
       if(v0.children){
         children=v0.children.map((v1:any)=>{
-          return { title:v1['meta']['title']|v0['title'], icon: v1['meta']['icon'], key: `/${v1['path']}`, meta:{ keepAlive:true, rank: '' }}
+          return { name:v1['meta']['name']|v0['title'],  path: `/${v1['path']}`, meta:v1['meta']}
         }) 
       }
-      return{ children, title: v0['title'], icon: v0['meta']['icon'], meta:{ keepAlive:true, rank: '' }, key: v0['id']}
+      return{ children, name: v0['name'],  meta:v0['meta'], path: v0['path']}
     })
     arrRes.unshift(...fixedMenu)
   }
   return arrRes
 }
 let menu:any=dealMenu()
-
 export default menu
 

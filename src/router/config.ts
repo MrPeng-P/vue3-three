@@ -1,5 +1,5 @@
 
-import { routerConfig, routes } from './router'
+import { routerConfig, routes,menuModel,noPath } from './router'
 import allStore from '@/store'
 
 class intercept {
@@ -10,11 +10,7 @@ class intercept {
     static setRouterBefore() {
         routerConfig.beforeEach(async (to, from, next) => {
             if (to.path = '/login') {
-                const store = allStore()
 
-                const { menu } = store
-                const { changeMenu } = menu
-                changeMenu(routes[0])
             }
             next()
         })
@@ -30,10 +26,17 @@ class intercept {
     // after触发
     static setRouterAfter() {
         routerConfig.afterEach(async (to, from, next) => {
-            if(to.fullPath!==from.fullPath){
+
+            const noList= noPath.filter((item)=>{
+                return item.name==to.name
+            })
+            if(to.fullPath!==from.fullPath&&noList.length==0){
+              
                 const store = allStore()
                 const { meta } = store
-                const { addMeta } = meta
+                const { addMeta,changeActiveMeta } = meta
+                changeActiveMeta(to.fullPath)
+
                 addMeta({
                     meta:to.meta,
                     fullPath:to.fullPath

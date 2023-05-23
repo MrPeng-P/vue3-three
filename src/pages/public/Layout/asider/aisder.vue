@@ -37,7 +37,7 @@ const AppAside = defineComponent({
         //菜单生成
         const getMenu = (menuList: any) => {
             return menuList.map((item: any) => {
-                if (item.children && item.children.length > 0 && !item.hidden) {
+                if (item.children && item.children.length > 0 && !item.meta.hidden) {
                     const slots = {
 
                         title: () => (
@@ -57,7 +57,7 @@ const AppAside = defineComponent({
                             {getMenu(item.children)}
                         </el-sub-menu>
                     )
-                } else if (!item.hidden) {
+                } else if (!item.meta.hidden) {
 
                     return (
                         <el-menu-item index={item.path}>

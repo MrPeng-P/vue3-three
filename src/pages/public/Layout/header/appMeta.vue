@@ -17,15 +17,19 @@ const AppMeta = defineComponent({
     setup(props) {
         const router: Router = useRouter()
         const { meta } = allStore()
-        const { deleteMeta, metaData } = meta
-        let activeMeta: any = ref('/home')
+        const { deleteMeta, metaData,changeActiveMeta } = meta
+    
         const deleteMenthod = (e: any, item: metaItem, index: number,) => {
             e.stopPropagation()
-
-            if (metaData.metaList.length > 1) {
+            if (metaData.metaList.length > 1&&metaData.metaList.length!=index+1) {
                 deleteMeta(item, index)
                 changeMeta(metaData.metaList[index])
-            } else {
+            } else if(metaData.metaList.length > 1&&metaData.metaList.length==index+1){
+                deleteMeta(item, index)
+
+                changeMeta(metaData.metaList[index-1])
+            }else {
+              
                 if (item.fullPath != '/home') {
                     deleteMeta(item, index)
                     router.push('/home')
@@ -34,17 +38,16 @@ const AppMeta = defineComponent({
             }
         }
         const changeMeta = (val: metaItem) => {
-            activeMeta.value = val.fullPath
             router.push(val.fullPath)
         }
         const menuEle = (metaList: metaItem[]) => {
             return metaList.map((item: metaItem, index: number) => {
-                return (<div class={'meta-item ' + (activeMeta.value == item.fullPath ? 'active-meta' : '')} onClick={e => changeMeta(item)}><el-icon class={'logo'}><tk-icon showIcon={item.meta.icon} type="show"></tk-icon></el-icon> {item.meta.title} <el-icon onClick={(e: any) => { deleteMenthod(e, item, index) }} class={'close'}><tk-icon showIcon={'Close'} type="show"></tk-icon></el-icon>   </div>)
+                return (<div class={'meta-item ' + (metaData.activeMeta == item.fullPath ? 'active-meta' : '')} onClick={e => changeMeta(item)}><el-icon class={'logo'}><tk-icon showIcon={item.meta.icon} type="show"></tk-icon></el-icon> {item.meta.title} <el-icon onClick={(e: any) => { deleteMenthod(e, item, index) }} class={'close'}><tk-icon showIcon={'Close'} type="show"></tk-icon></el-icon>   </div>)
             })
         }
         return () => (
             <div class={'meta-box'}>
-                <div class={'meta-box-set'}>{menuEle(metaData.metaList)}</div>
+                <div class={'meta-box-set'}>  {menuEle(metaData.metaList)}</div>
             </div>
 
         )

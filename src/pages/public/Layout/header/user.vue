@@ -1,6 +1,6 @@
 <script lang="tsx" name="AppUser">
 import allStore from '@/store'
-import { storeToRefs } from 'pinia';
+import { useRouter } from 'vue-router';
 
 
 const AppUser = defineComponent({
@@ -10,14 +10,18 @@ const AppUser = defineComponent({
         }
     },
     setup(props) {
-        const {user}=allStore()
-        console.log(user);
-        
-        // const {userInfo}= storeToRefs(user)
+        const {user,menu}=allStore()
+        console.log(user,);
+        const router=useRouter()
         const {userInfo}= user
-        
+        const allMethods={
+            outLogin:()=>{
+                menu.changeMenu([])
+                router.push('/login')
+            }
+        }
         const userDom = () => {
-            return <div class={'avator'}><el-avatar> {userInfo.name} </el-avatar></div>
+            return <div class={'avator'} onClick={allMethods.outLogin}><el-avatar> {userInfo.name} </el-avatar></div>
         }
         return () => (
             <div class={'use-box'}>{userDom()}</div>

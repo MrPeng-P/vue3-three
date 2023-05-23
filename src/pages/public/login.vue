@@ -2,6 +2,7 @@
 import { defineComponent } from 'vue';
 import allStore from '@/store'
 import {  useRouter } from 'vue-router';
+import {routes,menuModel} from '@/router/router'
 export default defineComponent({
 
     setup() {
@@ -9,11 +10,13 @@ export default defineComponent({
       
       
         const { menu } = allStore()
-
+        const { changeMenu }=menu
 
         let allMethods = {
             loginIn: () => {
-           
+                
+                changeMenu(menuModel)
+               
 
                 router.push('/home')
             }

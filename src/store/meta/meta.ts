@@ -3,7 +3,8 @@ import { parse, stringify } from 'zipson'
 import { metaItem, metaData } from '@/types/meta';
 export const metaStore = defineStore('meta', () => {
     let metaData: metaData = reactive({
-        metaList: []
+        metaList: [],
+        activeMeta:'/home'
     })
 
     const allMeta = {
@@ -19,6 +20,10 @@ export const metaStore = defineStore('meta', () => {
         //删除
         deleteMeta: (item: metaItem, index: number) => {
             metaData.metaList.splice(index, 1);
+        },
+        //修改activeMeta
+        changeActiveMeta(value:String){
+            metaData.activeMeta=value
         }
     }
 

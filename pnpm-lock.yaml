@@ -57,6 +57,9 @@ devDependencies:
   dat.gui:
     specifier: ^0.7.9
     version: 0.7.9
+  rollup-plugin-analyzer:
+    specifier: ^4.0.0
+    version: 4.0.0
   typescript:
     specifier: ^4.9.3
     version: 4.9.5
@@ -2272,6 +2275,11 @@ packages:
   /reusify@1.0.4:
     resolution: {integrity: sha512-U9nH88a3fc/ekCF1l0/UP1IosiuIjyTh7hBvXVMHYgVcfGvt897Xguj2UOLDeI5BG2m7/uwyaLVT6fbtCwTyzw==}
     engines: {iojs: '>=1.0.0', node: '>=0.10.0'}
+    dev: true
+
+  /rollup-plugin-analyzer@4.0.0:
+    resolution: {integrity: sha512-LL9GEt3bkXp6Wa19SNR5MWcvHNMvuTFYg+eYBZN2OIFhSWN+pEJUQXEKu5BsOeABob3x9PDaLKW7w5iOJnsESQ==}
+    engines: {node: '>=8.0.0'}
     dev: true
 
   /rollup@3.17.3:
