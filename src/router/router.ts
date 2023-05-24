@@ -25,22 +25,6 @@ export const menuModel = [{
     component: () => import('@/pages/views/home/p-home.vue'),
     meta: { title: '首页', icon: 'HomeFilled',hidden:false, transition: 'slide-left' }
 },{
-    path: 'link',
-    name: 'link',
-    meta: { title: '链接管理', icon: 'Avatar', affix: true, transition: 'slide-left' },
-    children: [{
-        path: 'link-p-select',
-        name: 'select',
-        component: () => import('@/pages/views/link/p-select.vue'),
-        meta: { title: '链接管理', icon: 'User', affix: true, transition: 'slide-left' },
-    },
-    {
-        path: 'link-p-select-operate',
-        name: 'select-operate',
-        component: () => import('@/pages/views/link/p-select-operate.vue'),
-        meta: { title: '链接管理-操作', icon: 'User', affix: true, transition: 'slide-left' },
-    }]
-}, {
     path: 'system',
     name: 'system',
     meta: { title: '系统管理', icon: 'Avatar', affix: true, transition: 'slide-left' },
