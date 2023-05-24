@@ -20,6 +20,27 @@ function forFindRouter(path: string, menu: Array<any>): any {
     return meta
 }
 export const menuModel = [{
+    path: 'home',
+    name: 'home',
+    component: () => import('@/pages/views/home/p-home.vue'),
+    meta: { title: '首页', icon: 'HomeFilled',hidden:false, transition: 'slide-left' }
+},{
+    path: 'link',
+    name: 'link',
+    meta: { title: '链接管理', icon: 'Avatar', affix: true, transition: 'slide-left' },
+    children: [{
+        path: 'link-p-select',
+        name: 'select',
+        component: () => import('@/pages/views/link/p-select.vue'),
+        meta: { title: '链接管理', icon: 'User', affix: true, transition: 'slide-left' },
+    },
+    {
+        path: 'link-p-select-operate',
+        name: 'select-operate',
+        component: () => import('@/pages/views/link/p-select-operate.vue'),
+        meta: { title: '链接管理-操作', icon: 'User', affix: true, transition: 'slide-left' },
+    }]
+}, {
     path: 'system',
     name: 'system',
     meta: { title: '系统管理', icon: 'Avatar', affix: true, transition: 'slide-left' },
@@ -111,6 +132,7 @@ function createRouterFromFile() {
     const children: any = []
     const modules = import.meta.glob('../pages/views/*/*')
     const keys = Object.keys(modules)
+    console.log('%c ..........keys.........','color:#31ef0e',keys)
     for (let i = 0; i < keys.length; i++) {
         let component = modules[keys[i]]
         let strArr = keys[i].replace(/[.]/g, '/').split('/').reverse()

@@ -100,25 +100,23 @@ export default defineComponent({
             let eleItem: any = null
             switch (item.type) {
                 case 'input':
-                    eleItem = <el-input v-model={form[key]} disabled={disabledOperate} input-style={item.width ? { width: item.width + 'px' } : ''} placeholder={item.placeholder ? item.placeholder : '请输入' + item.title} ></el-input>
-
+                    eleItem = <el-input v-model={form[key]} disabled={item.disabled||disabledOperate} input-style={item.width ? { width: item.width + 'px' } : ''} placeholder={item.placeholder ? item.placeholder : '请输入' + item.title} ></el-input>
                     break;
                 case 'date':
-
                     eleItem = <el-date-picker
                         v-model={form[key]}
                         type={item.dateType}
-                        disabled={disabledOperate}
+                        disabled={item.disabled||disabledOperate}
                         placeholder={item.placeholder ? item.placeholder : '请选择' + item.title}
                     />
                     break;
                 case "select":
-                    eleItem = <el-select v-model={form[key]} disabled={disabledOperate} placeholder={item.placeholder ? item.placeholder : '请选择' + item.title} onChange={item.event.change}>
+                    eleItem = <el-select v-model={form[key]} disabled={item.disabled||disabledOperate} placeholder={item.placeholder ? item.placeholder : '请选择' + item.title} onChange={item.event.change}>
                         {proSelect(item.list, item.optionKeys)}
                     </el-select>
                     break;
                 case "radio":
-                    eleItem = <el-radio-group v-model={form[key]} disabled={disabledOperate}>
+                    eleItem = <el-radio-group v-model={form[key]} disabled={item.disabled||disabledOperate}>
                         {proRadio(item.list)}
                     </el-radio-group>
                     break;

@@ -37,6 +37,7 @@ const AppAside = defineComponent({
         //菜单生成
         const getMenu = (menuList: any) => {
             return menuList.map((item: any) => {
+                console.log('%c ..........item.meta.........','color:#31ef0e',item.name,!item.meta.hidden)
                 if (item.children && item.children.length > 0 && !item.meta.hidden) {
                     const slots = {
 
@@ -58,7 +59,7 @@ const AppAside = defineComponent({
                         </el-sub-menu>
                     )
                 } else if (!item.meta.hidden) {
-
+                    console.log('%c ..........item.name.........','color:#31ef0e',item.name)
                     return (
                         <el-menu-item index={item.path}>
                             {item.meta.icon ? (
@@ -92,7 +93,6 @@ const AppAside = defineComponent({
                 text-color={asiderData.textColor}
                 onSelect={handleSelect}
             >
-                {/* {activeIndex.value} */}
                 {getMenu(props.menuList)}
             </el-menu>
         )

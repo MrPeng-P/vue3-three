@@ -198,12 +198,12 @@ export default defineComponent({
                 footer
               </template>
             </tkForm> -->
-    <tkTable :tableData="tableData" :tableHead="tableHead" :formData="formData" @queryData="queryData">
+    <!-- <tkTable :tableData="tableData" :tableHead="tableHead" :formData="formData" @queryData="queryData">
       <template #operate="slotProps">
         <el-button v-for="button in buttons" :key="button.text" :type="button.type" text
           @click="operate(slotProps, button)">{{ button.text }}</el-button>
       </template>
-    </tkTable>
+    </tkTable> -->
   </div>
 </template>
 <style scoped></style>
