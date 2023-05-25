@@ -50,7 +50,6 @@ export default defineComponent({
         */
         const allMethods = {
             submit: () => {
-                console.log('%c ..........form.........', 'color:#31ef0e', form)
                 emit('submit', form)
             },
             reset: (formValue: any) => {

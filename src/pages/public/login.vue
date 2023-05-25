@@ -37,7 +37,6 @@ export default defineComponent({
 
 
         }
-        console.log('%c ..........menuModel.........','color:#31ef0e',menuModel)
         let allMethods = {
             loginIn: () => {
 

@@ -25,6 +25,11 @@ export const menuModel = [{
     component: () => import('@/pages/views/home/p-home.vue'),
     meta: { title: '首页', icon: 'HomeFilled',hidden:false, transition: 'slide-left' }
 },{
+    path: 'three-p-three',
+    name: 'three',
+    component: () => import('@/pages/views/three/p-three.vue'),
+    meta: { title: 'three', icon: 'HomeFilled',hidden:true, transition: 'slide-left' }
+},{
     path: 'system',
     name: 'system',
     meta: { title: '系统管理', icon: 'Avatar', affix: true, transition: 'slide-left' },
@@ -116,7 +121,6 @@ function createRouterFromFile() {
     const children: any = []
     const modules = import.meta.glob('../pages/views/*/*')
     const keys = Object.keys(modules)
-    console.log('%c ..........keys.........','color:#31ef0e',keys)
     for (let i = 0; i < keys.length; i++) {
         let component = modules[keys[i]]
         let strArr = keys[i].replace(/[.]/g, '/').split('/').reverse()
@@ -132,6 +136,7 @@ function createRouterFromFile() {
             })
         }
     }
+    console.log('%c ..........children.........','color:#31ef0e',children)
     // store.commit('SET_ROUTERCOMPONENTS', children)
     return children
 }
@@ -169,6 +174,7 @@ export const routes: Array<RouteRecordRaw> =
                 component: () => import('@/pages/views/home/p-home.vue'),
                 meta: { title: '首页', icon: 'HomeFilled', hidden: true, transition: 'slide-left' }
             },
+          
             ...createRouterFromFile()
                 // ...menuModel
             ]
