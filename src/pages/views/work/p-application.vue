@@ -3,7 +3,7 @@ import { defineComponent, ref, onMounted, reactive, toRefs } from 'vue'
 import tkForm from '@/components/tk-from/tk-form.jsx'
 
 import tkTable from '@/components/tk-table/tk-table'
-import { useRouter,useRoute } from 'vue-router'
+import { useRouter, useRoute } from 'vue-router'
 
 export default defineComponent({
 
@@ -16,7 +16,7 @@ export default defineComponent({
         const value1 = ref('')
         const router = useRouter()
         const route = useRoute()
-        console.log('%c ..........route.........','color:#31ef0e',route)
+        console.log('%c ..........route.........', 'color:#31ef0e', route)
         //form
         const formData: any = {
             // slots:{
@@ -24,81 +24,39 @@ export default defineComponent({
             //   type:'slots'
             // },
             name: {
-                title: '姓名',
+                title: '应用名称',
                 type: 'input',
                 key: 'name',
                 placeholder: '姓名',
                 width: '200',
             },
-            age: {
-                title: '年龄',
-                type: 'input',
-                key: 'age',
-                width: '200'
-            },
-            brithday: {
-                title: '生日',
-                type: 'date',
-                dateType: 'date',
-                key: 'brithday',
-            },
-            role: {
-                title: '服务商',
-                type: 'select',
-                event: {
-                    change: () => {
-                        console.log('%c ..........11.........', 'color:#31ef0e', 11)
-                    }
-                },
-                optionKeys: ['id', 'name'],
-                list: [{
-                    id: 1,
-                    name: '山东',
-
-                }, {
-                    id: 2,
-                    name: '山西',
-                }],
-                key: 'role',
-            },
-            type: {
-                title: '是否开启',
-                type: 'radio',
-                list: [{
-                    name: '是',
-                    label: true
-                }, {
-                    name: '否',
-                    label: false
-                }],
-                key: 'type',
-            },
-
+            
+          
         }
         //表格头
         const tableHead = [{
-            title: '姓名',
-            dataIndex: 'name',
-            key: 'name',
+            title: 'id',
+            dataIndex: 'id',
+            key: 'id',
             width: '180'
         }, {
-            title: '生日',
+            title: '应用名称',
             dataIndex: 'date',
             key: 'date',
             width: '180'
 
         }, {
-            title: '地址',
+            title: '应用编号',
             dataIndex: 'address',
             key: 'address',
             width: '280'
         }, {
-            title: '地址',
+            title: '更新时间',
             dataIndex: 'address',
             key: 'address',
             width: '280'
         }, {
-            title: '地址',
+            title: '创建时间',
             dataIndex: 'address',
             key: 'address',
             width: '280'
@@ -108,16 +66,20 @@ export default defineComponent({
             key: 'operate',
             slots: 'operate',
             fixed: "right",
-            width: '240'
+            width: '240',
+
         }]
         //表格数据
         const tableData = reactive([
-            {
+            {   
+                id:1,
                 date: '2016-05-03',
                 name: 'Tom',
                 address: 'No. 189, Grove St, Los Angeles',
             },
             {
+                id:2,
+
                 date: '2016-05-02',
                 name: 'Tom',
                 address: 'No. 189, Grove St, Los Angeles',
@@ -156,11 +118,19 @@ export default defineComponent({
                 console.log('%c ..........表格查询data.........', 'color:#31ef0e', data)
             },
             operate: (slot: any, button: any) => {
-                console.log('%c ..........slot.........', 'color:#31ef0e', slot, button)
+                console.log('%c ..........button.........','color:#31ef0e',button)
                 switch (button.operateType) {
+                    case 'add':
+                        router.push({
+                            path: route.fullPath + '-operate',
+                            query: {
+                                type: button.operateType
+                            }
+                        })
+                        break;
                     case 'detail':
                         router.push({
-                            path: route.fullPath+'-operate',
+                            path: route.fullPath + '-operate',
                             query: {
                                 id: slot?.id ? slot.id : 'xxx',
                                 type: button.operateType
@@ -169,7 +139,7 @@ export default defineComponent({
                         break;
                     case 'edit':
                         router.push({
-                            path: route.fullPath+'-operate',
+                            path: route.fullPath + '-operate',
                             query: {
                                 id: slot?.id ? slot.id : 'xxx',
                                 type: button.operateType
@@ -205,14 +175,19 @@ export default defineComponent({
 
         <!-- <tkForm :formData="formData" @submit="submitData">
 
-                  <template v-slot:title="slotProps">
-                    {{slotProps.item.name }}
-                  </template>
-                  <template v-slot:footer>
-                    footer
-                  </template>
-                </tkForm> -->
+                      <template v-slot:title="slotProps">
+                        {{slotProps.item.name }}
+                      </template>
+                      <template v-slot:footer>
+                        footer
+                      </template>
+                    </tkForm> -->
         <tkTable :tableData="tableData" :tableHead="tableHead" :formData="formData" @queryData="queryData">
+            <template #head="slotProps">
+                <div class="add-box">
+                    <el-button type="primary" @click="operate(slotProps, {operateType:'add'})">新增</el-button>
+                </div>
+            </template>
             <template #operate="slotProps">
                 <el-button v-for="button in buttons" :key="button.text" :type="button.type" text
                     @click="operate(slotProps, button)">{{ button.text }}</el-button>
@@ -220,4 +195,9 @@ export default defineComponent({
         </tkTable>
     </div>
 </template>
-<style scoped></style>
+<style scoped>
+.add-box {
+    display: flex;
+    justify-content: flex-end;
+}
+</style>

@@ -6,23 +6,31 @@
 $default: #545c64;
 $scrollbar: #0ad4f8;
 $header-bg: #000;
-$primary:'#409eff';
+$primary: '#409eff';
+$theme-color: #eff0f4;
 $header-height: 50px;
 $p-border-color: var(--p-border-color);
-$p-switch-icon-color:var(--p-switch-icon-color);
-@forward 'element-plus/theme-chalk/src/common/var.scss' with (
-    $header: ('height': $header-height,
+$p-switch-icon-color: var(--p-switch-icon-color);
+$p-sum-text-color: var(--sum-text-color);
+@forward 'element-plus/theme-chalk/src/common/var.scss' with ($header: ('height': $header-height,
         'padding': 0 10px 0 10px,
-    )
-   
-);
-:root{
-    --p-border-color:#eee;
-    --p-switch-icon-color:#fff;
+    ),
+    $bg-color: (
+        'page': red,
+    ));
+
+:root {
+    --p-border-color: #eee;
+    --p-switch-icon-color: #ffffff;
+    --sum-text-color: rgb(18, 57, 231)
+
 }
-html.dark{
-    --p-border-color:#666;
-    --p-switch-icon-color:yellow;
+
+html.dark {
+    --p-border-color: #666;
+    --p-switch-icon-color: yellow;
+    --sum-text-color: yellow;
+
 }
 
 

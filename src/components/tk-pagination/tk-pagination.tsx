@@ -1,3 +1,4 @@
+import './tk-pagination.scss'
 export default defineComponent({
     emits: ['currentChange','sizeChange'],
 
@@ -53,6 +54,7 @@ export default defineComponent({
         return (
             <>
                 <el-pagination
+                    class="pagination-box"
                     v-model:current-page={this.currentPage}
                     v-model:page-size={this.pageSize}
                     page-sizes={this.paginationFrom.pageSizes}

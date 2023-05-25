@@ -41,8 +41,8 @@ export default defineComponent({
 
     },
     setup(props, content) {
-        const { emit, slots }: { emit: any, slots: any } = content
-
+        const { emit, slots,attrs }: { emit: any, slots: any ,attrs:any} = content
+        console.log('%c ..........attrs.........','color:#31ef0e',attrs)
         let { formData, tableData, tableHead } = props
         //分页
         let currentPage=ref(1)
@@ -97,6 +97,8 @@ export default defineComponent({
         }
         return {
             tableData,
+            slots,
+            attrs,
             tableHead,
             formData,
             currentPage,
@@ -119,7 +121,8 @@ export default defineComponent({
                         }
                     }}
                 </tkForm>
-                <el-table data={this.tableData}  >
+                {this.slots['head']?this.slots['head']():null}
+                <el-table data={this.tableData} height="500" {...this.attrs.tableAttr} >
                     {
                         this.proTable(this.tableHead)
                     }

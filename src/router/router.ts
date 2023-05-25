@@ -30,6 +30,16 @@ export const menuModel = [{
     component: () => import('@/pages/views/three/p-three.vue'),
     meta: { title: 'three', icon: 'HomeFilled',hidden:true, transition: 'slide-left' }
 },{
+    path: 'tool',
+    name: 'tool',
+    meta: { title: '工具管理', icon: 'Avatar', affix: true, transition: 'slide-left' },
+    children: [{
+        path: 'tool-p-file-split',
+        name: 'user',
+        component: () => import('@/pages/views/tool/p-file-split.vue'),
+        meta: { title: '切割文件', icon: 'User', affix: true, transition: 'slide-left' },
+    }]
+}, {
     path: 'system',
     name: 'system',
     meta: { title: '系统管理', icon: 'Avatar', affix: true, transition: 'slide-left' },

@@ -25,57 +25,36 @@ export default defineComponent({
       //   name:'title',
       //   type:'slots'
       // },
-      name: {
-        title: '应用名称',
+      name1: {
+        title: '日期',
         type: 'input',
         key: 'name',
-        placeholder: '应用名称',
+        width: '200',
+      },
+      name2: {
+        title: '投放方',
+        type: 'input',
+        key: 'name',
+        width: '200',
+      },
+      name: {
+        title: '预付款',
+        type: 'input',
+        key: 'name',
         width: '200',
       },
       age: {
-        title: '年龄',
+        title: '到账',
         type: 'input',
         key: 'age',
         width: '200'
       },
-      brithday: {
-        title: '生日',
-        type: 'date',
-        dateType: 'date',
-        key: 'brithday',
+      age1: {
+        title: '备注',
+        type: 'input',
+        key: 'age',
+        width: '200'
       },
-      role: {
-        title: '服务商',
-        type: 'select',
-        event: {
-          change: () => {
-            console.log('%c ..........11.........', 'color:#31ef0e', 11)
-          }
-        },
-        optionKeys: ['id', 'name'],
-        list: [{
-          id: 1,
-          name: '山东',
-
-        }, {
-          id: 2,
-          name: '山西',
-        }],
-        key: 'role',
-      },
-      type: {
-        title: '是否开启',
-        type: 'radio',
-        list: [{
-          name: '是',
-          label: true
-        }, {
-          name: '否',
-          label: false
-        }],
-        key: 'type',
-      },
-
     }
 
 
