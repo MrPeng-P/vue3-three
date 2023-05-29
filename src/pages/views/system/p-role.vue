@@ -133,6 +133,15 @@ export default defineComponent({
                     case 'delete':
 
                         break;
+                    case 'role':
+                    router.push({
+                            path: route.fullPath+'-operate',
+                            query: {
+                                id: slot?.id ? slot.id : 'xxx',
+                                type: button.operateType
+                            }
+                        })
+                        break
                     default:
                         break;
                 }

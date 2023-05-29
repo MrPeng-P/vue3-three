@@ -7,4 +7,7 @@ export const operateType=[{
 },{
     type:'detail',
     title:'详情'
+},{
+    type:'role',
+    title:'权限'
 }]

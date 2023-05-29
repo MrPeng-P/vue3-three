@@ -1,6 +1,6 @@
 import { radioItem, selectItem } from '@/types/form'
 import './tk-form.scss'
-import { FormInstance } from 'element-plus'
+import { ElDatePicker, ElInput, ElRadio, ElRadioGroup, ElSelect, FormInstance } from 'element-plus'
 export default defineComponent({
     emits: ['submit'],
     components: {

@@ -1,3 +1,4 @@
+import { ElPagination } from 'element-plus'
 import './tk-pagination.scss'
 export default defineComponent({
     emits: ['currentChange','sizeChange'],
