@@ -1,7 +1,6 @@
 import tkPagination from "@/components/tk-pagination/tk-pagination"
 import tkForm from "@/components/tk-from/tk-form"
 import './tk-table.scss'
-import { ElCard, ElTable } from "element-plus"
 export default defineComponent({
     emits: ['queryData'],
     components: {

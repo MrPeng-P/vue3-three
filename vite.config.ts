@@ -8,17 +8,22 @@ import path from 'path'
 import Icons from 'unplugin-icons/vite'
 import IconsResolver from 'unplugin-icons/resolver'
 import analyze from "rollup-plugin-analyzer"
+import viteCompression from 'vite-plugin-compression';
 const pathSrc = path.resolve(__dirname, 'src')
 import vueJsx from '@vitejs/plugin-vue-jsx'
 
 // https://vitejs.dev/config/
 export default ((mode) => {
   return defineConfig({
-    base: loadEnv(mode, process.cwd()).VITE_APP_NAME,
+    base: process.env.NODE_ENV=='production'?'./':'',
     plugins: [
       vue(),
       vueJsx(),
       AutoImport({
+        include: [
+          /\.[tj]sx?$/, // .ts, .tsx, .js, .jsx
+          /\.vue$/, /\.vue\?vue/, // .vue
+        ],
         // Auto import functions from Vue, e.g. ref, reactive, toRef...
         // 自动导入 Vue 相关函数，如：ref, reactive, toRef 等
         imports: ['vue'],
@@ -37,11 +42,14 @@ export default ((mode) => {
 
         dts: path.resolve(pathSrc, 'auto-imports.d.ts'),
       }),
-
+      viteCompression({
+        algorithm:'gzip'
+      }),
       Components({
         resolvers: [
           // Auto register icon components
           // 自动注册图标组件
+          
           IconsResolver({
             enabledCollections: ['Operation'],
           }),
