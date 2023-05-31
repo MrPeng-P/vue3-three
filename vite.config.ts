@@ -15,7 +15,7 @@ import vueJsx from '@vitejs/plugin-vue-jsx'
 // https://vitejs.dev/config/
 export default ((mode) => {
   return defineConfig({
-    base: process.env.NODE_ENV=='production'?'./':'',
+    base: process.env.NODE_ENV == 'production' ? './' : '',
     plugins: [
       vue(),
       vueJsx(),
@@ -43,19 +43,19 @@ export default ((mode) => {
         dts: path.resolve(pathSrc, 'auto-imports.d.ts'),
       }),
       viteCompression({
-        algorithm:'gzip'
+        algorithm: 'gzip'
       }),
       Components({
         resolvers: [
           // Auto register icon components
           // 自动注册图标组件
-          
+
           IconsResolver({
             enabledCollections: ['Operation'],
           }),
           // Auto register Element Plus components
           // 自动导入 Element Plus 组件
-          ElementPlusResolver({importStyle: "sass"}),
+          ElementPlusResolver({ importStyle: "sass" }),
         ],
 
         dts: path.resolve(pathSrc, 'components.d.ts'),
@@ -64,8 +64,8 @@ export default ((mode) => {
       Icons({
         autoInstall: true,
       }),
-    
-    
+
+
     ],
     build: {
       rollupOptions: {
@@ -88,6 +88,20 @@ export default ((mode) => {
         }
       }
     },
+    server: {
+      // 服务器主机名，如果允许外部访问，可设置为"0.0.0.0 "
+      host: '0.0.0.0',
+      port: 5200, // 服务器端口号
+      open: false, // 是否自动打开浏览器
 
+      // 代理
+      proxy: {
+        '/api': {
+          target: 'https://play.google.com',
+          changeOrigin: true,
+          rewrite: (path) => path.replace(/^\/api/, '')
+        }
+      }
+    },
   })
 })
