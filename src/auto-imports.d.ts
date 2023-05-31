@@ -5,6 +5,14 @@
 export {}
 declare global {
   const EffectScope: typeof import('vue')['EffectScope']
+  const ElCard: typeof import('element-plus/es')['ElCard']
+  const ElDatePicker: typeof import('element-plus/es')['ElDatePicker']
+  const ElInput: typeof import('element-plus/es')['ElInput']
+  const ElPagination: typeof import('element-plus/es')['ElPagination']
+  const ElRadio: typeof import('element-plus/es')['ElRadio']
+  const ElRadioGroup: typeof import('element-plus/es')['ElRadioGroup']
+  const ElSelect: typeof import('element-plus/es')['ElSelect']
+  const ElTable: typeof import('element-plus/es')['ElTable']
   const computed: typeof import('vue')['computed']
   const createApp: typeof import('vue')['createApp']
   const customRef: typeof import('vue')['customRef']

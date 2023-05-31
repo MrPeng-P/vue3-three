@@ -13,7 +13,7 @@ import piniaPluginPersistedstate from 'pinia-plugin-persistedstate'
 import 'element-plus/theme-chalk/dark/css-vars.css'
 
 const app = createApp(App)
-
+console.log('%c ..........store.........','color:#31ef0e',store.state)
 
 for (const [key, component] of Object.entries(ElementPlusIconsVue)) {
     app.component(key, component)

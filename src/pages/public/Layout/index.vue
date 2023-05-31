@@ -8,7 +8,7 @@ import { useRoute, useRouter } from 'vue-router';
 import allStore from '@/store'
 import configuration from './components/configuration.vue'
 import { storeToRefs } from 'pinia';
-import { routerConfig ,routes} from '@/router/router';
+import { routerConfig, routes } from '@/router/router';
 export default defineComponent({
     components: {
         AppAside,
@@ -17,20 +17,22 @@ export default defineComponent({
         AppMeta
     },
     setup() {
-        const routeList:any=routes[0].children
+        const routeList: any = routes[0].children
         const router = useRouter()
         const route = useRoute()
         // 不许缓存 暂定 操作
-        let excludeList:any = reactive([])
-        routeList.map((item:any)=>{
-            if(item.path.includes('operate')){
-                  excludeList.push(item.path.split('p-')[1])
+        let excludeList: any = reactive([])
+        routeList.map((item: any) => {
+            if (item.path.includes('operate')) {
+                excludeList.push(item.path.split('p-')[1])
             }
             return
         })
-        const { menu } = allStore()
+        const { menu ,setting} = allStore()
+        const { sizeData } = setting
+
         const { menuData } = storeToRefs(menu)
-     
+
         let menuList = menuData.value.menuList
         let modeType = ref(false) //导航栏显示位置
         let asiderData = reactive({//导航栏信息
@@ -40,19 +42,35 @@ export default defineComponent({
             bgImage: asideBgImage
         })
         let headFrom = reactive({ //头部布局
-            layoutList: [{span:2,name:'collapse'},{span:0,name:'breadcrumb'},{span:16,name:'any'},{span:6,name:'appUser'}],
+            layoutList: [{ span: 2, name: 'collapse' }, { span: 0, name: 'breadcrumb' }, { span: 16, name: 'any' }, { span: 6, name: 'appUser' }],
         })
         let isCollapse = ref(false)
         let openSelect = ref(false)
+
         const allMethods = {
             changeCollapse: (item?: any) => {
                 isCollapse.value = !isCollapse.value
             },
             // 开启/关闭 设置
-            changeSet:()=>{
-                openSelect.value=!openSelect.value
+            changeSet: () => {
+                openSelect.value = !openSelect.value
+            },
+            /**
+             * @desc 手机
+             * @param 
+             * @return 
+             * @author ppc
+             * @date 2023-05-31 12:05:02
+            */
+            _isMobile: () => {
+                let flag = navigator.userAgent.match(/(phone|pad|pod|iPhone|iPod|ios|iPad|Android|Mobile|BlackBerry|IEMobile|MQQBrowser|JUC|Fennec|wOSBrowser|BrowserNG|WebOS|Symbian|Windows Phone)/i)
+                return flag
             }
         }
+        onMounted(() => {
+            isCollapse.value = !allMethods._isMobile() ? isCollapse.value : !isCollapse.value
+            console.log('%c ..........allMethods._isMobile().........', 'color:#31ef0e', isCollapse.value)
+        })
         return {
             modeType,
             asiderData,
@@ -61,6 +79,7 @@ export default defineComponent({
             headFrom,
             excludeList,
             openSelect,
+            sizeData,
             ...allMethods
         }
     }
@@ -69,33 +88,41 @@ export default defineComponent({
 </script>
 
 <template>
-    <div class="common-layout">
-        <el-container>
-            <el-aside v-if="!modeType" class="aside-box">
-                <div class="logo"> 后台管理</div>
-                <AppAside class="app-aside" :menuList="menuList" :isCollapse="isCollapse"></AppAside>
-            </el-aside>
-            <el-container>
-                <el-header class="hearder-box">
-                    <AppHeader :headFrom="headFrom" :isCollapse="isCollapse" @changeCollapse="changeCollapse"></AppHeader>
-                </el-header>
-                <AppMeta></AppMeta>
+    <el-config-provider :size="sizeData.size">
 
-                <el-main>
-                    <router-view v-slot="{ Component }">
-                        <keep-alive :exclude="excludeList">
+
+        <div class="common-layout">
+
+            <el-container>
+                <el-aside v-if="!modeType" class="aside-box">
+                    <div class="logo"> 后台管理</div>
+                    <AppAside class="app-aside" :menuList="menuList" :isCollapse="isCollapse"></AppAside>
+                </el-aside>
+                <el-container>
+                    <el-header class="hearder-box">
+                        <AppHeader :headFrom="headFrom" :isCollapse="isCollapse" @changeCollapse="changeCollapse">
+                        </AppHeader>
+                    </el-header>
+                    <AppMeta></AppMeta>
+
+                    <el-main>
+                        <router-view v-slot="{ Component }">
+                            <keep-alive :exclude="excludeList">
                                 <component :is="Component" />
-                        </keep-alive>
-                    </router-view>
-                    <div class="select-btn" @click="changeSet"><Setting style="width: 1em; height: 1em; " /></div>
-                        <configuration  :openSelect="openSelect" @changeSet="changeSet"></configuration>
-                      
-                </el-main>
+                            </keep-alive>
+                        </router-view>
+                        <div class="select-btn" @click="changeSet">
+                            <Setting style="width: 1em; height: 1em; " />
+                        </div>
+                        <configuration :openSelect="openSelect" @changeSet="changeSet"></configuration>
+
+                    </el-main>
+                </el-container>
+
             </el-container>
 
-        </el-container>
-
-    </div>
+        </div>
+    </el-config-provider>
 </template>
 <style scoped lang="scss">
 .common-layout {
@@ -116,13 +143,13 @@ export default defineComponent({
     border-bottom: 2px solid $p-border-color;
 }
 
-.select-btn{
+.select-btn {
     display: flex;
     justify-content: center;
     align-items: center;
     position: fixed;
     top: 50%;
-    right:5px;
+    right: 5px;
     width: 36px;
     height: 36px;
     border-radius: 10px;
@@ -169,5 +196,4 @@ export default defineComponent({
         height: 100%;
         overflow-y: auto;
     }
-}
-</style>
+}</style>

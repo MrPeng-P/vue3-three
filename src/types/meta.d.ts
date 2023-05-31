@@ -13,3 +13,7 @@ export interface metaData{
     metaList:metaItem[],
     activeMeta:String
 }
+
+export interface sizeData{
+    size:String
+}
