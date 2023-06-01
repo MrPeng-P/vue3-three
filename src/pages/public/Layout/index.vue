@@ -169,6 +169,7 @@ export default defineComponent({
 }
 
 *::-webkit-scrollbar {
+    display: none;
     width: 8px;
     height: 8px;
     background-color: lighten($default, 12);

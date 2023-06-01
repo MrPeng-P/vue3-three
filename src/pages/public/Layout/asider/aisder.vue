@@ -21,8 +21,8 @@ const AppAside = defineComponent({
             default: false
         }
     },
-    setup(props) {
-
+    setup(props,content) {
+        const { attrs } =content
         const route = useRoute()
         const router = useRouter()
 
@@ -83,6 +83,7 @@ const AppAside = defineComponent({
         return () => (
 
             <el-menu
+                {...attrs}
                 default-active={activeIndex.value}
                 active-text-color={asiderData.activeTextColor}
                 background-color={asiderData.bgColor}
@@ -102,7 +103,7 @@ export default AppAside
  
 <style lang="scss" scoped>
 .el-menu-vertical-demo:not(.el-menu--collapse) {
-    width: 200px;
+    width: 180px;
     min-height: 400px;
 }
 
