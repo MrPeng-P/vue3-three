@@ -9,6 +9,7 @@ class intercept {
     // before拦截
     static setRouterBefore() {
         routerConfig.beforeEach(async (to, from, next) => {
+            
             if (to.path = '/login') {
 
             }

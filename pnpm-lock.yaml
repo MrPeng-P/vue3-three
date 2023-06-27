@@ -4,6 +4,9 @@ dependencies:
   '@element-plus/icons-vue':
     specifier: ^2.1.0
     version: 2.1.0(vue@3.3.4)
+  '@tweenjs/tween.js':
+    specifier: ^20.0.3
+    version: 20.0.3
   '@vueuse/core':
     specifier: ^10.1.2
     version: 10.1.2(vue@3.3.4)
@@ -709,6 +712,10 @@ packages:
 
   /@sxzz/popperjs-es@2.11.7:
     resolution: {integrity: sha512-Ccy0NlLkzr0Ex2FKvh2X+OyERHXJ88XJ1MXtsI9y9fGexlaXaVTPzBCRBwIxFkORuOb+uBqeu+RqnpgYTEZRUQ==}
+    dev: false
+
+  /@tweenjs/tween.js@20.0.3:
+    resolution: {integrity: sha512-SYUe1UgY5HM05EB4+0B4arq2IPjvyzKXoklXKxSYrc2IFxGm1cBrqg5XbiB5uwbs0xY5j+rj986NAJMM0KZaUw==}
     dev: false
 
   /@types/dat.gui@0.7.10:

@@ -8,9 +8,14 @@ export default defineComponent({
   components: {
   },
   setup() {
+    let test=ref('')
+    test.value='22'
     const allMethods={
       getList:()=>{
-        http.get('https://play.google.com/store/apps/details?id=constanc.jodanj&pli=1')
+        fetch("https://play.google.com/store/apps/details?id=constanc.jodanj&pli=1")
+    .then(res => console.log('%c ..........res.........','color:#31ef0e',res))
+        // console.log('%c ..........fetch.........','color:#31ef0e',fetch)
+        // http.get('https://play.google.com/store/apps/details?id=constanc.jodanj&pli=1')
       }
     }
     onMounted(() => {

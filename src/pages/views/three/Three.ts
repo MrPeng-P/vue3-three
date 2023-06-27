@@ -3,6 +3,7 @@ import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'
 import { GLTF, GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
 import { GUI } from "dat.gui";
+import * as TWEEN from '@tweenjs/tween.js'
 interface loadFrom {
     key:String
 }
@@ -119,6 +120,7 @@ export class pThree {
     resolveAnimations(gltf: GLTF,loaderKey:String) {
         this._mixer = new THREE.AnimationMixer(gltf.scene)
         gltf.animations.forEach((animation: any) => {
+            console.log('%c ..........animation.........','color:#31ef0e',animation)
             this._mixer.clipAction(animation).play()
         })
         this._mixerList.set(loaderKey,this._mixer)

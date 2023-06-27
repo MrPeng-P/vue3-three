@@ -97,7 +97,7 @@ export default ((mode) => {
       // 代理
       proxy: {
         '/api': {
-          target: 'https://play.google.com',
+          target: '127.0.0.1:1081',
           changeOrigin: true,
           rewrite: (path) => path.replace(/^\/api/, '')
         }

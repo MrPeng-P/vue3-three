@@ -21,7 +21,7 @@
     "allowJs": true,
 
   },
-  "include": ["src/**/*.ts", "src/**/*.d.ts", "src/**/*.tsx", "src/**/*.vue", "src/**/*.jsx", ],
+  "include": ["src/**/*.ts", "src/**/*.d.ts", "src/**/*.tsx", "src/**/*.vue", "src/**/*.jsx", "src/pages/views/three/PPC/model/ppcThree.js", "src/pages/views/three/PPC/model/ppcThree.js", ],
   "references": [{
     "path": "./tsconfig.node.json",
     // 在.tsx文件里支持JSX
