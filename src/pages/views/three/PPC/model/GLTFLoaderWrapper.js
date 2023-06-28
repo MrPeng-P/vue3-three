@@ -1,10 +1,13 @@
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
-
+import { DRACOLoader } from 'three/examples/jsm/loaders/DRACOLoader';
 class GLTFLoaderWrapper {
   three;
   animationFrameId;
   constructor(THREE) {
     this.loader = new GLTFLoader();
+    this.darcloader = new DRACOLoader();
+    this.darcloader.setDecoderPath( './glb/draco/' );
+    this.darcloader.preload();
     this.THREE = THREE;
     this.mixer = null;
     this.clock = new THREE.Clock();
@@ -17,21 +20,25 @@ class GLTFLoaderWrapper {
    * @author ppc
    * @date 2023-06-27 15:29:24
    */
-  loadModel(url) {
+  loadModel(url,type) {
+   if(type){
+    this.loader.setDRACOLoader(this.darcloader);
+   }
+    
     return new Promise((resolve, reject) => {
       this.loader.load(
         url,
         (gltf) => {
-          this.setAnimate(gltf);
+          this.initAnimate(gltf);
 
-          gltf.scene.traverse((object) => {
-            if (object.isSkinnedMesh) {
-              // 获取骨骼对象
-              const skeleton = object.skeleton;
-              // 显示骨骼
-              showSkeleton(skeleton);
-            }
-          });
+          // gltf.scene.traverse((object) => {
+          //   if (object.isSkinnedMesh) {
+          //     // 获取骨骼对象
+          //     const skeleton = object.skeleton;
+          //     // 显示骨骼
+          //     showSkeleton(skeleton);
+          //   }
+          // });
           // 加载成功，将 gltf 对象传递给 resolve
           resolve(gltf);
         },
@@ -72,6 +79,9 @@ class GLTFLoaderWrapper {
     scene.add(boneLines);
   }
 
+  setAnimate(){
+
+  }
   
   /**
    * @desc 初始化动画
@@ -80,7 +90,7 @@ class GLTFLoaderWrapper {
    * @author ppc
    * @date 2023-06-27 15:31:48
   */
-  setAnimate(gltf) {
+  initAnimate(gltf) {
     const animations = gltf.animations;
     this.mixer = new this.THREE.AnimationMixer(gltf.scene);
     for (let i = 0; i < animations.length; i++) {

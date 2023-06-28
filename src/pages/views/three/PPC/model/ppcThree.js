@@ -30,7 +30,7 @@ class ppcThree {
     this.renderer.setSize(threeConfig.width, threeConfig.height);
 
     this.optimization();
-    this.renderer.setClearColor(0xb9d3ff, 1); //设置背景颜色
+    this.renderer.setClearColor(0xcccccc, 1); //设置背景颜色
     document
       .getElementById(threeConfig.id)
       ?.appendChild(this.renderer.domElement);

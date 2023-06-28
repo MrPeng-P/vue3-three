@@ -9,7 +9,7 @@ class CameraComponent {
     this.near = near;
     this.far = far;
     this.camera = new THREE.OrthographicCamera(this.fov, this.aspect, this.near, this.far);
-    this.camera.position.set(200, 300, 200); //设置相机位置
+    this.camera.position.set(200, 200, 200); //设置相机位置
   }
 
   addToScene(scene) {
