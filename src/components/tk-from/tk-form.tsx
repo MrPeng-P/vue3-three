@@ -1,3 +1,4 @@
+//@ts-nocheck
 import { radioItem, selectItem } from '@/types/form'
 import './tk-form.scss'
 export default defineComponent({

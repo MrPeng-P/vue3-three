@@ -42,6 +42,7 @@ export default ((mode) => {
 
         dts: path.resolve(pathSrc, 'auto-imports.d.ts'),
       }),
+      //压缩打包
       viteCompression({
         algorithm: 'gzip'
       }),
@@ -68,6 +69,7 @@ export default ((mode) => {
 
     ],
     build: {
+      minify: true,//文本压缩
       rollupOptions: {
         plugins: [analyze()]
       },
@@ -76,7 +78,7 @@ export default ((mode) => {
     resolve: {
       alias: {
         // 键必须以斜线开始和结束
-        '@/assets': path.resolve(__dirname, "..", "src/assets"),
+        '/@assets/': path.resolve(__dirname, "..", "src/assets")+'/',
         '@': path.resolve(__dirname, './src'),
         '~/': `${path.resolve(__dirname, 'src')}/`,
       },

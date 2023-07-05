@@ -1,3 +1,4 @@
+//@ts-nocheck
 import './tk-pagination.scss'
 export default defineComponent({
     emits: ['currentChange','sizeChange'],

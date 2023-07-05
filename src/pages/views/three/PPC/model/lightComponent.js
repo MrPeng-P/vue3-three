@@ -6,6 +6,7 @@ class LightComponent {
     this.color = color;
     this.intensity = intensity;
     this.light = new THREE.DirectionalLight(this.color, this.intensity);
+    this.light.intensity=1
   }
 
   addToScene(scene) {

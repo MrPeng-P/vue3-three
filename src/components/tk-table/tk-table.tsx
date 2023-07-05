@@ -1,3 +1,5 @@
+
+//@ts-nocheck
 import tkPagination from "@/components/tk-pagination/tk-pagination"
 import tkForm from "@/components/tk-from/tk-form"
 import './tk-table.scss'

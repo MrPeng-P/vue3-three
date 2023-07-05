@@ -61,7 +61,7 @@ export const menuModel = [
       {
         path: "three-p-test",
         name: "threeTest",
-        component: () => import("@/pages/views/three/PPC/test/p-test.vue"),
+        component: () => import("@/pages/views/three/p-test.vue"),
         meta: {
           title: "threeTest",
           icon: "HomeFilled",

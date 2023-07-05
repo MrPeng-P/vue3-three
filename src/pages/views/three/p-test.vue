@@ -4,7 +4,7 @@ import ppcThree from "./PPC/model/ppcThree";
 import GLTFLoaderWrapper from "./PPC/model/GLTFLoaderWrapper";
 import pCamera from "./PPC/model/cameraComponent";
 import pLight from "./PPC/model/lightComponent";
-import { forEach, size } from "lodash";
+
 import TWEEN from "@tweenjs/tween.js";
 
 const container = ref();
@@ -52,7 +52,7 @@ function useMethods() {
 function getElementOffset(element: any) {
   const rect = element.getBoundingClientRect();
   const bodyRect = document.body.getBoundingClientRect();
-  console.log('%c ..........rect.........','color:#31ef0e',rect,bodyRect)
+  console.log("%c ..........rect.........", "color:#31ef0e", rect, bodyRect);
 
   const offsetX = rect.left - bodyRect.left;
   const offsetY = rect.top - bodyRect.top;
@@ -77,53 +77,23 @@ async function useThree() {
   //灯光
   const light = new pLight(0xffffff, 1);
   light.addToScene(wrapper.scene);
+
+
+  const gltfT = new GLTFLoaderWrapper(THREE);
+
+  const modelT = await gltfT.toloadModel("./glb/feiji.glb",'');
+  // 导入模型
   const gltf1 = new GLTFLoaderWrapper(THREE);
-  const model = await gltf1.loadModel("./glb/feiji.glb");
+  const model = await gltf1.loadModel("./glb/feiji.glb",'');
   model.scene.scale.set(5, 5, 5);
   model.scene.position.set(120, 120, 120);
-
+ 
   // model.scene.traverse((node:any) => {
   //   if (node.isMesh) {
   //     // 将材质的wireframe属性设置为true
   //     node.material.wireframe = true;
   //   }
   // });
-
-  // 点击事件
-  function onEquipmentClick(modelBox:any) {
-    const equipmentList: any = [];
-    modelBox?.traverse((mesh: any) => {
-      if (!(mesh instanceof THREE.Mesh)) return undefined;
-      const { material } = mesh;
-      mesh.material = material.clone();
-      equipmentList.push(mesh);
-      return undefined;
-    });
-    const handler = (event: MouseEvent) => {
-
-      const el = container.value as HTMLElement;
-      const mouse = new THREE.Vector2(
-        ((event.clientX-offset.offsetX) / el.offsetWidth) * 2 - 1,
-        -((event.clientY-offset.offsetY) / el.offsetHeight) * 2 + 1
-      );
-      const raycaster = new THREE.Raycaster();
-      raycaster.setFromCamera(mouse, camera.camera);
-      const intersects = raycaster.intersectObject(modelBox, true);
-     
-      if (size(intersects) <= 0) return undefined;
-      const equipment = <any>intersects[0].object;
-      if (!equipment) return undefined;
-      equipmentList.forEach((child: any) => {
-        child.material.emissive.setHex(child.currentHex);
-      });
-      equipment.currentHex =
-        equipment.currentHex ?? equipment.material.emissive.getHex();
-      equipment.material.emissive.setHex(0x00ff00);
-      return undefined;
-    };
-    document.addEventListener("click", handler);
-    onUnmounted(() => document.removeEventListener("click", handler));
-  }
 
   wrapper.sceneAdd(model.scene);
 
@@ -138,8 +108,44 @@ async function useThree() {
   model3.scene.scale.set(10, 10, 10);
   wrapper.sceneAdd(model3.scene);
   model3.scene.position.set(6, 6, 6);
-  console.log("%c ..........model3.........", "color:#31ef0e", model3);
+  gltf3.setTraverse(model3)
 
+  // 点击事件
+  function onEquipmentClick(modelBox: any) {
+    const equipmentList: any = [];
+    modelBox?.traverse((mesh: any) => {
+      if (!(mesh instanceof THREE.Mesh)) return undefined;
+      const { material } = mesh;
+      mesh.material = material.clone();
+      equipmentList.push(mesh);
+      return undefined;
+    });
+    const handler = (event: MouseEvent) => {
+      const el = container.value as HTMLElement;
+      const mouse = new THREE.Vector2(
+        ((event.clientX - offset.offsetX) / el.offsetWidth) * 2 - 1,
+        -((event.clientY - offset.offsetY) / el.offsetHeight) * 2 + 1
+      );
+      const raycaster = new THREE.Raycaster();
+      raycaster.setFromCamera(mouse, camera.camera);
+      const intersects = raycaster.intersectObject(modelBox, true);
+
+      if (intersects.length <= 0) return undefined;
+      const equipment = <any>intersects[0].object;
+      if (!equipment) return undefined;
+      equipmentList.forEach((child: any) => {
+        child.material.emissive.setHex(child.currentHex);
+      });
+      equipment.currentHex =
+        equipment.currentHex ?? equipment.material.emissive.getHex();
+      equipment.material.emissive.setHex(0x00ff00);
+      return undefined;
+    };
+    document.addEventListener("click", handler);
+    onUnmounted(() => document.removeEventListener("click", handler));
+  }
+
+  
   // 使用封装的功能
   // wrapper.createCube();
   // 渲染场景
