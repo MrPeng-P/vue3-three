@@ -13,8 +13,8 @@ class ppcThree {
   objectPosition = 0; // 示例中以对象的位置作为动画的变化示例
   constructor() {
     this._scene = new THREE.Scene();
-    this._axisHelper = new THREE.AxesHelper(250); //AxesHelper 新版名
-    this._scene.add(this._axisHelper);
+    // this._axisHelper = new THREE.AxesHelper(250); //AxesHelper 新版名
+    // this._scene.add(this._axisHelper);
 
     // ...
   }
@@ -44,7 +44,9 @@ class ppcThree {
   get scene() {
     return this._scene;
   }
-
+  get renderer(){
+    return this.renderer
+  }
   createCube() {
     const geometry = new THREE.BoxGeometry(1, 1, 1);
     const material = new THREE.MeshBasicMaterial({ color: 0x00ff00 });

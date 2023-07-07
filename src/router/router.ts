@@ -59,6 +59,17 @@ export const menuModel = [
         },
       },
       {
+        path: "three-p-car",
+        name: "threeCar",
+        component: () => import("@/pages/views/three/p-car.vue"),
+        meta: {
+          title: "three",
+          icon: "HomeFilled",
+          hidden: false,
+          transition: "slide-left",
+        },
+      },
+      {
         path: "three-p-test",
         name: "threeTest",
         component: () => import("@/pages/views/three/p-test.vue"),

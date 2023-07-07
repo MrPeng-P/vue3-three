@@ -6,6 +6,7 @@ import pCamera from "./PPC/model/cameraComponent";
 import pLight from "./PPC/model/lightComponent";
 
 import TWEEN from "@tweenjs/tween.js";
+import { config } from "process";
 
 const container = ref();
 function setTweens(obj: any, newObj: any, duration = 1500) {
@@ -71,23 +72,24 @@ async function useThree() {
   //相机
   const _s = 150;
   const _k = threeConfig.width / threeConfig.height;
-  const camera = await new pCamera(-_s * _k, _s * _k, _s, -_s);
+  const camera = await new pCamera();
+  camera.setOrthographicCamera(-_s * _k, _s * _k, _s, -_s);
+
   // const camera = await new pCamera(50, _k, 0.1, 2000);
   // camera.addToScene(wrapper.scene);
   //灯光
   const light = new pLight(0xffffff, 1);
   light.addToScene(wrapper.scene);
 
-
   const gltfT = new GLTFLoaderWrapper(THREE);
 
-  const modelT = await gltfT.toloadModel("./glb/feiji.glb",'');
+  const modelT = await gltfT.toloadModel("./glb/feiji.glb", "");
   // 导入模型
   const gltf1 = new GLTFLoaderWrapper(THREE);
-  const model = await gltf1.loadModel("./glb/feiji.glb",'');
+  const model = await gltf1.loadModel("./glb/feiji.glb", "");
   model.scene.scale.set(5, 5, 5);
   model.scene.position.set(120, 120, 120);
- 
+
   // model.scene.traverse((node:any) => {
   //   if (node.isMesh) {
   //     // 将材质的wireframe属性设置为true
@@ -108,7 +110,7 @@ async function useThree() {
   model3.scene.scale.set(10, 10, 10);
   wrapper.sceneAdd(model3.scene);
   model3.scene.position.set(6, 6, 6);
-  gltf3.setTraverse(model3)
+  gltf3.setTraverse(model3);
 
   // 点击事件
   function onEquipmentClick(modelBox: any) {
@@ -145,7 +147,6 @@ async function useThree() {
     onUnmounted(() => document.removeEventListener("click", handler));
   }
 
-  
   // 使用封装的功能
   // wrapper.createCube();
   // 渲染场景
@@ -158,6 +159,8 @@ async function useThree() {
   };
 }
 onMounted(() => {
+  threeConfig.width = container.value.clientWidth;
+  threeConfig.height = container.value.clientHeight;
   useThree();
   // useMethods();
 });
@@ -166,4 +169,9 @@ onMounted(() => {
 <template>
   <div ref="container" id="three" :style="threeConfig"></div>
 </template>
-<style scoped></style>
+<style scoped>
+#three {
+  width: 100vw;
+  height: 100vh;
+}
+</style>
