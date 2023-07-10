@@ -4,7 +4,7 @@ import ppcThree from "./PPC/model/ppcThree";
 import GLTFLoaderWrapper from "./PPC/model/GLTFLoaderWrapper";
 import pCamera from "./PPC/model/cameraComponent";
 import pLight from "./PPC/model/lightComponent";
-
+import { useGUI } from './hooks/useGui';
 import TWEEN from "@tweenjs/tween.js";
 import { config } from "process";
 
@@ -99,13 +99,19 @@ async function useThree() {
   // 点击事件
   function onEquipmentClick(modelBox: any) {
     const equipmentList: any = [];
+    let cheyiList:any=[]
     modelBox?.traverse((mesh: any) => {
       if (!(mesh instanceof THREE.Mesh)) return undefined;
       const { material } = mesh;
       mesh.material = material.clone();
       equipmentList.push(mesh);
+
+      if(mesh.name.split('_')[1]>='46'&&mesh.name.split('_')[1]<='52'){
+        cheyiList.push(mesh);
+      }
       return undefined;
     });
+
     const handler = (event: MouseEvent) => {
       const el = container.value as HTMLElement;
       const mouse = new THREE.Vector2(
@@ -115,16 +121,26 @@ async function useThree() {
       const raycaster = new THREE.Raycaster();
       raycaster.setFromCamera(mouse, camera.camera);
       const intersects = raycaster.intersectObject(modelBox, true);
-
       if (intersects.length <= 0) return undefined;
       const equipment = <any>intersects[0].object;
       if (!equipment) return undefined;
       equipmentList.forEach((child: any) => {
         child.material.emissive.setHex(child.currentHex);
       });
-      equipment.currentHex =
+
+      if(equipment.name.split('_')[1]>=46&&equipment.name.split('_')[1]<=52){
+        cheyiList.forEach((child:any)=>{
+          child.currentHex =
+          child.currentHex ?? child.material.emissive.getHex();
+          child.material.emissive.setHex(0x00ff00);
+        })
+     
+      }else{
+        equipment.currentHex =
         equipment.currentHex ?? equipment.material.emissive.getHex();
       equipment.material.emissive.setHex(0x00ff00);
+      }
+     
       return undefined;
     };
     document.addEventListener("click", handler);
@@ -136,11 +152,25 @@ async function useThree() {
   // 渲染场景
   wrapper.render(camera.camera);
   onEquipmentClick(model3.scene);
+  const { gui }:{gui:any} = useGUI(wrapper.scene, camera.camera, wrapper.renderer);
+     const folder = gui.value.addFolder("Custom Controls");
 
+    // 创建一个自定义控制项
+    const statsController = { stats: 1, id: "usePc" };
+    const folderBox = folder.add(statsController, "stats").name("性能面板");
+    folderBox.domElement.setAttribute("id", statsController.id);
+    folderBox.domElement.children[0].style.display = "none";
+    folderBox.domElement.parentElement.parentElement.style.height = "60px";
+    // 将 stats.js 的 DOM 元素添加到控制项的 domElement 属性中
+    // folder.add(statsController, 'stats').name('性能面板');
+    wrapper.stats.dom.style = "position:relative";
+    document.getElementById("usePc")?.appendChild(wrapper.stats.dom);
+  
   return {
     onEquipmentClick,
   };
 }
+
 onMounted(() => {
   threeConfig.width = container.value.clientWidth;
   threeConfig.height = container.value.clientHeight;

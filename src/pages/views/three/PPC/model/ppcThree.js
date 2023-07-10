@@ -3,6 +3,9 @@ import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 import { EffectComposer } from "three/addons/postprocessing/EffectComposer.js";
 import { RenderPass } from "three/addons/postprocessing/RenderPass.js";
 import { OutlinePass } from "three/addons/postprocessing/OutlinePass.js";
+import Stats from "stats.js";
+import { useGUI } from "../../hooks/useGui";
+
 import { ShaderPass } from "three/addons/postprocessing/ShaderPass.js";
 class ppcThree {
   renderer;
@@ -21,13 +24,15 @@ class ppcThree {
   init(threeConfig) {
     this.threeConfig = threeConfig;
     // 初始化 Three.js
-    this.renderer = new THREE.WebGLRenderer({ 
-      antialias: true,  // 禁用抗锯齿
-      precision: 'highp', // 设置渲染精度为高精度
+    this.renderer = new THREE.WebGLRenderer({
+      antialias: true, // 禁用抗锯齿
+      precision: "highp", // 设置渲染精度为高精度
       alpha: true, // 启用透明背景
       depth: true, // 启用深度缓冲
     });
     this.renderer.setSize(threeConfig.width, threeConfig.height);
+    this.stats = new Stats({ autoPlace: false });
+    this.stats.showPanel(0); // 0 表示显示性能面板，1 表示显示内存面板，2 表示显示渲染面板
 
     this.optimization();
     this.renderer.setClearColor(0xcccccc, 1); //设置背景颜色
@@ -44,8 +49,8 @@ class ppcThree {
   get scene() {
     return this._scene;
   }
-  get renderer(){
-    return this.renderer
+  get renderer() {
+    return this.renderer;
   }
   createCube() {
     const geometry = new THREE.BoxGeometry(1, 1, 1);
@@ -56,21 +61,38 @@ class ppcThree {
   sceneAdd(val) {
     this._scene.add(val);
   }
-  renderAll(camera,event) {
- 
-    this.animationFrameId&&cancelAnimationFrame(this.animationFrameId)
-  
+  renderAll(camera, event) {
+    this.stats.begin(); // 开始统计性能
+
+    this.animationFrameId && cancelAnimationFrame(this.animationFrameId);
+
     this.renderer.render(this._scene, camera);
-    this.animationFrameId=requestAnimationFrame(this.renderAll.bind(this, camera));
+    this.animationFrameId = requestAnimationFrame(
+      this.renderAll.bind(this, camera)
+    );
+    this.stats.end(); // 结束统计性能
   }
   render(camera) {
     this.camera = camera;
+    // const { gui } = useGUI(this.scene, camera.camera, this.renderer);
+    // const folder = gui.value.addFolder("Custom Controls");
+
+    // // 创建一个自定义控制项
+    // const statsController = { stats: 1, id: "usePc" };
+    // const folderBox = folder.add(statsController, "stats").name("性能面板");
+    // folderBox.domElement.setAttribute("id", statsController.id);
+    // folderBox.domElement.children[0].style.display = "none";
+    // folderBox.domElement.parentElement.parentElement.style.height = "60px";
+    // // 将 stats.js 的 DOM 元素添加到控制项的 domElement 属性中
+    // // folder.add(statsController, 'stats').name('性能面板');
+    // this.stats.dom.style = "position:relative";
+    // document.getElementById("usePc").appendChild(this.stats.dom);
     const controls = new OrbitControls(camera, this.renderer.domElement); //创建控件对象
-    controls.addEventListener("change", ()=>{
-      this.renderAll.bind(this, camera,true)()
+    controls.addEventListener("change", () => {
+      this.renderAll.bind(this, camera, true)();
     }); //监听鼠标、键盘事件
     this.useComposer();
-    this.renderAll(camera,false);
+    this.renderAll(camera, false);
   }
   useComposer() {
     this.composer = new EffectComposer(this.renderer);

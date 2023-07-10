@@ -47,23 +47,23 @@ export const menuModel = [
       transition: "slide-left",
     },
     children: [
-      {
-        path: "three-p-three",
-        name: "three",
-        component: () => import("@/pages/views/three/p-three.vue"),
-        meta: {
-          title: "three",
-          icon: "HomeFilled",
-          hidden: false,
-          transition: "slide-left",
-        },
-      },
+      // {
+      //   path: "three-p-three",
+      //   name: "three",
+      //   component: () => import("@/pages/views/three/p-three.vue"),
+      //   meta: {
+      //     title: "three",
+      //     icon: "HomeFilled",
+      //     hidden: false,
+      //     transition: "slide-left",
+      //   },
+      // },
       {
         path: "three-p-car",
         name: "threeCar",
         component: () => import("@/pages/views/three/p-car.vue"),
         meta: {
-          title: "three",
+          title: "threeCar",
           icon: "HomeFilled",
           hidden: false,
           transition: "slide-left",

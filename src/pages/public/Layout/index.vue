@@ -108,7 +108,11 @@ export default defineComponent({
                     <el-main>
                         <router-view v-slot="{ Component }">
                             <keep-alive :exclude="excludeList">
-                                <component :is="Component" />
+                                <Suspense>
+
+                                    <component :is="Component" />
+                                </Suspense>
+                                
                             </keep-alive>
                         </router-view>
                         <div class="select-btn" @click="changeSet">
