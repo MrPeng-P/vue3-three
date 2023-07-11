@@ -1,6 +1,7 @@
 
 import { routerConfig, routes,menuModel,noPath } from './router'
 import allStore from '@/store'
+import ppcThree from "@/pages/views/three/PPC/model/ppcThree";
 
 class intercept {
     constructor() {
@@ -9,7 +10,7 @@ class intercept {
     // before拦截
     static setRouterBefore() {
         routerConfig.beforeEach(async (to, from, next) => {
-            
+         
             if (to.path = '/login') {
 
             }

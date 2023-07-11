@@ -21,13 +21,14 @@ export default defineComponent({
         const router = useRouter()
         const route = useRoute()
         // 不许缓存 暂定 操作
-        let excludeList: any = reactive([])
+        let excludeList: any = reactive(['p-car'])
         routeList.map((item: any) => {
             if (item.path.includes('operate')) {
                 excludeList.push(item.path.split('p-')[1])
             }
             return
         })
+        console.log('%c ..........excludeList.........','color:red',excludeList)
         const { menu ,setting} = allStore()
         const { sizeData } = setting
 
@@ -110,7 +111,7 @@ export default defineComponent({
                             <keep-alive :exclude="excludeList">
                                 <Suspense>
 
-                                    <component :is="Component" />
+                                    <component  :is="Component" />
                                 </Suspense>
                                 
                             </keep-alive>

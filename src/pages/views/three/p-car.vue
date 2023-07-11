@@ -16,7 +16,8 @@ function setTweens(obj: any, newObj: any, duration = 1500) {
   ro.onUpdate(function () {}); //执行回调
   ro.start();
 }
-
+let wrapperThree:any=undefined
+let guiThree:any=undefined
 let threeConfig = reactive({
   id: "three",
   width: 800,
@@ -53,7 +54,6 @@ function useMethods() {
 function getElementOffset(element: any) {
   const rect = element.getBoundingClientRect();
   const bodyRect = document.body.getBoundingClientRect();
-  console.log("%c ..........rect.........", "color:#31ef0e", rect, bodyRect);
 
   const offsetX = rect.left - bodyRect.left;
   const offsetY = rect.top - bodyRect.top;
@@ -146,14 +146,17 @@ async function useThree() {
     document.addEventListener("click", handler);
     onUnmounted(() => document.removeEventListener("click", handler));
   }
-
+  function disposeThree(){
+    wrapper.disposeThree()
+  }
   // 使用封装的功能
   // wrapper.createCube();
   // 渲染场景
   wrapper.render(camera.camera);
   onEquipmentClick(model3.scene);
   const { gui }:{gui:any} = useGUI(wrapper.scene, camera.camera, wrapper.renderer);
-     const folder = gui.value.addFolder("Custom Controls");
+  guiThree=gui.value
+  const folder = gui.value.addFolder("Custom Controls");
 
     // 创建一个自定义控制项
     const statsController = { stats: 1, id: "usePc" };
@@ -165,18 +168,25 @@ async function useThree() {
     // folder.add(statsController, 'stats').name('性能面板');
     wrapper.stats.dom.style = "position:relative";
     document.getElementById("usePc")?.appendChild(wrapper.stats.dom);
-  
   return {
     onEquipmentClick,
+    wrapper
   };
 }
 
-onMounted(() => {
+onMounted(async() => {
+
   threeConfig.width = container.value.clientWidth;
   threeConfig.height = container.value.clientHeight;
-  useThree();
+  const { wrapper }:any=await useThree();
+  wrapperThree=wrapper
   // useMethods();
 });
+onBeforeUnmount(()=>{
+  console.log('%c ..........wrapperThree.........','color:#31ef0e',wrapperThree)
+  wrapperThree.disposeThree()
+  guiThree.destroy()
+})
 </script>
 
 <template>

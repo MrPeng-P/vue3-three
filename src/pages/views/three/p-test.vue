@@ -16,7 +16,7 @@ function setTweens(obj: any, newObj: any, duration = 1500) {
   ro.onUpdate(function () {}); //执行回调
   ro.start();
 }
-
+let wrapperThree:any=undefined
 let threeConfig = reactive({
   id: "three",
   width: 800,
@@ -138,6 +138,7 @@ async function useThree() {
       equipmentList.forEach((child: any) => {
         child.material.emissive.setHex(child.currentHex);
       });
+      console.log('%c ..........equipment.........','color:#31ef0e',equipment)
       equipment.currentHex =
         equipment.currentHex ?? equipment.material.emissive.getHex();
       equipment.material.emissive.setHex(0x00ff00);
@@ -146,24 +147,32 @@ async function useThree() {
     document.addEventListener("click", handler);
     onUnmounted(() => document.removeEventListener("click", handler));
   }
-
+  function disposeThree(){
+    wrapper.disposeThree()
+  }
   // 使用封装的功能
   // wrapper.createCube();
   // 渲染场景
   wrapper.render(camera.camera);
+ 
   onEquipmentClick(model.scene);
   onEquipmentClick(model3.scene);
 
   return {
     onEquipmentClick,
+    wrapper
   };
 }
 onMounted(() => {
   threeConfig.width = container.value.clientWidth;
   threeConfig.height = container.value.clientHeight;
-  useThree();
+  const { wrapper }:any=useThree();
+  wrapperThree=wrapper
   // useMethods();
 });
+onBeforeUnmount(()=>{
+  wrapperThree.disposeThree()
+})
 </script>
 
 <template>

@@ -124,6 +124,19 @@ class ppcThree {
     // outlinePass.pulsePeriod = 0;
     this.composer.addPass(outlinePass);
   }
+
+  disposeThree() {
+    cancelAnimationFrame(this.animationFrameId);
+     // 清空场景
+     while (this._scene.children.length > 0) {
+      this._scene.remove(this._scene.children[0]);
+    }
+
+    this.renderer.dispose();
+    this.renderer=null
+    this._scene = null;
+   
+  }
 }
 
 export default ppcThree;
