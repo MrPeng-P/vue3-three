@@ -70,6 +70,17 @@ export const menuModel = [
         },
       },
       {
+        path: "three-p-showings",
+        name: "showings",
+        component: () => import("@/pages/views/three/p-showings.vue"),
+        meta: {
+          title: "showings",
+          icon: "HomeFilled",
+          hidden: false,
+          transition: "slide-left",
+        },
+      },
+      {
         path: "three-p-test",
         name: "threeTest",
         component: () => import("@/pages/views/three/p-test.vue"),
