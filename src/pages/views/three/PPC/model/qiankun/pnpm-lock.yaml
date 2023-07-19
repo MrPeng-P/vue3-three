@@ -1,0 +1,42 @@
+lockfileVersion: '6.0'
+
+dependencies:
+  qiankun:
+    specifier: ^2.10.8
+    version: 2.10.8
+
+packages:
+
+  /@babel/runtime@7.22.3:
+    resolution: {integrity: sha512-XsDuspWKLUsxwCp6r7EhsExHtYfbe5oAGQ19kqngTdCPUoPQzOPdUbD/pB9PJiwb2ptYKQDjSJT3R6dC+EPqfQ==}
+    engines: {node: '>=6.9.0'}
+    dependencies:
+      regenerator-runtime: 0.13.11
+    dev: false
+
+  /import-html-entry@1.14.6:
+    resolution: {integrity: sha512-5MQkbwIr8n/bXOoE05M5/Nm0lnHO46vnb3D6svSvtVwpDqwhd/X14zjLcU31QWZ6gL8rUXNzj6vKHx4yOUL6gQ==}
+    dependencies:
+      '@babel/runtime': 7.22.3
+    dev: false
+
+  /lodash@4.17.21:
+    resolution: {integrity: sha512-v2kDEe57lecTulaDIuNTPy3Ry4gLGJ6Z1O3vE1krgXZNrsQ+LFTGHVxVjcXPs17LhbZVGedAJv8XZ1tvj5FvSg==}
+    dev: false
+
+  /qiankun@2.10.8:
+    resolution: {integrity: sha512-5w6QeM1INFavJdIWfSoDIVv2InV8MEojauvY5tY9Biu8hhE5Rml/HM2t/Y60kZcuOpgy/HGX+tcc6NkQuzDoCg==}
+    dependencies:
+      '@babel/runtime': 7.22.3
+      import-html-entry: 1.14.6
+      lodash: 4.17.21
+      single-spa: 5.9.4
+    dev: false
+
+  /regenerator-runtime@0.13.11:
+    resolution: {integrity: sha512-kY1AZVr2Ra+t+piVaJ4gxaFaReZVH40AKNo7UCX6W+dEwBo/2oZJzqfuN1qLq1oL45o56cPaTXELwrTh8Fpggg==}
+    dev: false
+
+  /single-spa@5.9.4:
+    resolution: {integrity: sha512-QkEoh0AzGuU82qnbUUk0ydF78QbU5wMKqKKJn7uUQfBiOYlRQEfIOpLM4m23Sab+kTOLI1kbYhYeiQ7fX5KVVw==}
+    dev: false

@@ -5,7 +5,6 @@ import { RenderPass } from "three/addons/postprocessing/RenderPass.js";
 import { OutlinePass } from "three/addons/postprocessing/OutlinePass.js";
 import Stats from "stats.js";
 import { useGUI } from "../../hooks/useGui";
-
 import { ShaderPass } from "three/addons/postprocessing/ShaderPass.js";
 class ppcThree {
   renderer;
@@ -124,18 +123,42 @@ class ppcThree {
     // outlinePass.pulsePeriod = 0;
     this.composer.addPass(outlinePass);
   }
-
+   getAllTextures() {
+    const textures = [];
+  
+    this._scene.traverse((object) => {
+      if (object.isMesh && object.material && object.material.map) {
+        // 检查对象的材质是否使用了纹理
+        textures.push(object.material.map);
+      }
+    });
+  
+    return textures;
+  }
+  
   disposeThree() {
+    const textures =this.getAllTextures()
+    for (let i = 0; i < textures.length; i++) {
+      textures[i].dispose();
+    }
     cancelAnimationFrame(this.animationFrameId);
      // 清空场景
-     while (this._scene.children.length > 0) {
-      this._scene.remove(this._scene.children[0]);
-    }
+     this._scene.traverse((child) => {
+      if (child.material) {
+        child.material.dispose();
+      }
+      if (child.geometry) {
+        child.geometry.dispose();
+      }
+      child = null;
+    });
 
     this.renderer.dispose();
     this.renderer=null
     this._scene = null;
-   
+    this.composer = null;
+    this.camera = null;
+  
   }
 }
 

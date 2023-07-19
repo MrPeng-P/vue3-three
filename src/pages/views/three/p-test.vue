@@ -81,9 +81,7 @@ async function useThree() {
   const light = new pLight(0xffffff, 1);
   light.addToScene(wrapper.scene);
 
-  const gltfT = new GLTFLoaderWrapper(THREE);
 
-  const modelT = await gltfT.toloadModel("./glb/feiji.glb", "");
   // 导入模型
   const gltf1 = new GLTFLoaderWrapper(THREE);
   const model = await gltf1.loadModel("./glb/feiji.glb", "");
