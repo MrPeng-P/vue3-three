@@ -11,6 +11,7 @@ class ppcThree {
   composer;
   camera;
   previousTime = 0;
+  controls;
   animationFrameId;
   objectPosition = 0; // 示例中以对象的位置作为动画的变化示例
   constructor() {
@@ -86,10 +87,10 @@ class ppcThree {
     // // folder.add(statsController, 'stats').name('性能面板');
     // this.stats.dom.style = "position:relative";
     // document.getElementById("usePc").appendChild(this.stats.dom);
-    const controls = new OrbitControls(camera, this.renderer.domElement); //创建控件对象
-    controls.addEventListener("change", () => {
-      this.renderAll.bind(this, camera, true)();
-    }); //监听鼠标、键盘事件
+    this.controls = new OrbitControls(camera, this.renderer.domElement); //创建控件对象
+    // this.controls.addEventListener("change", () => {
+    //   this.renderAll.bind(this, camera, true)();
+    // }); //监听鼠标、键盘事件
     this.useComposer();
     this.renderAll(camera, false);
   }
@@ -123,42 +124,76 @@ class ppcThree {
     // outlinePass.pulsePeriod = 0;
     this.composer.addPass(outlinePass);
   }
-   getAllTextures() {
+  getAllTextures() {
     const textures = [];
-  
+
     this._scene.traverse((object) => {
       if (object.isMesh && object.material && object.material.map) {
         // 检查对象的材质是否使用了纹理
         textures.push(object.material.map);
       }
     });
-  
+
     return textures;
   }
-  
+
   disposeThree() {
-    const textures =this.getAllTextures()
+    console.log(
+      "%c ..........this._scene....1.....",
+      "color:#31ef0e",
+      this._scene
+    );
+
+    this.controls.removeEventListener(
+      "change",
+      this.renderAll.bind(this, this.camera, true)
+    );
+    // 销毁 OrbitControls 实例
+    this.controls.dispose();
+
+
+    const textures = this.getAllTextures();
     for (let i = 0; i < textures.length; i++) {
       textures[i].dispose();
     }
     cancelAnimationFrame(this.animationFrameId);
-     // 清空场景
-     this._scene.traverse((child) => {
-      if (child.material) {
-        child.material.dispose();
-      }
-      if (child.geometry) {
-        child.geometry.dispose();
-      }
-      child = null;
-    });
+    //  // 清空场景
+    while (this._scene.children.length > 0) {
+      this._scene.remove(this._scene.children[0]);
+    }
+    this._scene.traverse((object) => {
+      if (object.isMesh) {
+        object.geometry.dispose();
+        object.material.dispose();
+        object.material = null;
+        object.geometry.dispose();
+        object.geometry = null;
 
+        if (object.material?.map) {
+          object.material.map.dispose();
+          object.material.map = null;
+        }
+      }
+    });
+    console.log(
+      "%c ..........this._scene.........",
+      "color:#31ef0e",
+      this._scene
+    );
     this.renderer.dispose();
-    this.renderer=null
+    console.log(
+      "%c ..........this.renderer.........",
+      "color:#31ef0e",
+      this.renderer
+    );
+    this.renderer = null;
     this._scene = null;
     this.composer = null;
     this.camera = null;
-  
+    this.stats = null;
+    this.threeConfig = {};
+    this.animationFrameId = null;
+    this.controls=null
   }
 }
 

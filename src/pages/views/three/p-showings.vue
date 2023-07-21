@@ -4,7 +4,7 @@ import ppcThree from "./PPC/model/ppcThree";
 import GLTFLoaderWrapper from "./PPC/model/GLTFLoaderWrapper";
 import pCamera from "./PPC/model/cameraComponent";
 import pLight from "./PPC/model/lightComponent";
-import { useGUI } from './hooks/useGui';
+import { useGUI } from "./hooks/useGui";
 import TWEEN from "@tweenjs/tween.js";
 import { config } from "process";
 
@@ -16,40 +16,14 @@ function setTweens(obj: any, newObj: any, duration = 1500) {
   ro.onUpdate(function () {}); //执行回调
   ro.start();
 }
-let wrapperThree:any=undefined
-let guiThree:any=undefined
+let wrapperThree: any = undefined;
+let guiThree: any = undefined;
 let threeConfig = reactive({
   id: "three",
   width: 800,
   height: 600,
 });
-function useMethods() {
-  // 创建一个对象来存储键盘按键的状态
-  const keyboard: any = {};
 
-  // 监听键盘按下事件
-  document.addEventListener("keydown", (event) => {
-    keyboard[event.code] = true;
-  });
-
-  // 监听键盘释放事件
-  document.addEventListener("keyup", (event) => {
-    keyboard[event.code] = false;
-  });
-
-  // 在每帧更新函数中检查键盘状态并控制模型动画
-  function updateAnimation() {
-    if (keyboard["KeyA"]) {
-      // 按下A键，执行某个动画动作
-      // 例如：modelAnimationAction.play();
-    }
-    if (keyboard["KeyB"]) {
-      // 按下B键，执行另一个动画动作
-      // 例如：otherAnimationAction.play();
-    }
-    // ... 可以根据需要添加更多按键控制逻辑
-  }
-}
 
 function getElementOffset(element: any) {
   const rect = element.getBoundingClientRect();
@@ -65,7 +39,7 @@ async function useThree() {
   // 创建 ppcThree 实例
   const wrapper = new ppcThree();
   wrapper.init(threeConfig);
-  wrapper.renderer?.setClearColor(0x000000, 1)
+  wrapper.renderer?.setClearColor(0x000000, 1);
   // 使用示例
   const box = document.getElementById("three"); // 替换 'box' 为您的盒子元素的 ID
   const offset = getElementOffset(box);
@@ -79,13 +53,11 @@ async function useThree() {
   // camera.addToScene(wrapper.scene);
   //灯光
   const light = new pLight(0xffffff, 1);
-  light.light.intensity=20
+  light.light.intensity = 20;
   light.addToScene(wrapper.scene);
 
-
-
   const gltf3 = new GLTFLoaderWrapper(THREE);
-  const model3 = await gltf3.loadModel("./glb/scene_22.glb", "darc");
+  const model3 = await gltf3.loadModel("./glb/car/car.gltf", "darc");
   model3.scene.scale.set(5, 5, 5);
   wrapper.sceneAdd(model3.scene);
   model3.scene.position.set(6, 6, 6);
@@ -94,14 +66,14 @@ async function useThree() {
   // 点击事件
   function onEquipmentClick(modelBox: any) {
     const equipmentList: any = [];
-    let cheyiList:any=[]
+    let cheyiList: any = [];
     modelBox?.traverse((mesh: any) => {
       if (!(mesh instanceof THREE.Mesh)) return undefined;
       const { material } = mesh;
       mesh.material = material.clone();
       equipmentList.push(mesh);
 
-      if(mesh.name.split('_')[1]>='46'&&mesh.name.split('_')[1]<='52'){
+      if (mesh.name.split("_")[1] >= "46" && mesh.name.split("_")[1] <= "52") {
         cheyiList.push(mesh);
       }
       return undefined;
@@ -123,63 +95,78 @@ async function useThree() {
         child.material.emissive.setHex(child.currentHex);
       });
 
-      if(equipment.name.split('_')[1]>=46&&equipment.name.split('_')[1]<=52){
-        cheyiList.forEach((child:any)=>{
+      if (
+        equipment.name.split("_")[1] >= 46 &&
+        equipment.name.split("_")[1] <= 52
+      ) {
+        cheyiList.forEach((child: any) => {
           child.currentHex =
-          child.currentHex ?? child.material.emissive.getHex();
+            child.currentHex ?? child.material.emissive.getHex();
           child.material.emissive.setHex(0x00ff00);
-        })
-     
-      }else{
+        });
+      } else {
         equipment.currentHex =
-        equipment.currentHex ?? equipment.material.emissive.getHex();
-      equipment.material.emissive.setHex(0x00ff00);
+          equipment.currentHex ?? equipment.material.emissive.getHex();
+        equipment.material.emissive.setHex(0x00ff00);
       }
-     
+
       return undefined;
     };
     document.addEventListener("click", handler);
-    onUnmounted(() => document.removeEventListener("click", handler));
+    return {
+      handler,
+    };
   }
- 
+
   // 使用封装的功能
   // wrapper.createCube();
   // 渲染场景
   wrapper.render(camera.camera);
-  onEquipmentClick(model3.scene);
-  const { gui }:{gui:any} = useGUI(wrapper.scene, camera.camera, wrapper.renderer);
-  guiThree=gui.value
+  const { handler } = onEquipmentClick(model3.scene);
+
+  const { gui }: { gui: any } = useGUI(
+    wrapper.scene,
+    camera.camera,
+    wrapper.renderer
+  );
+  guiThree = gui.value;
   const folder = gui.value.addFolder("Custom Controls");
 
-    // 创建一个自定义控制项
-    const statsController = { stats: 1, id: "usePc" };
-    const folderBox = folder.add(statsController, "stats").name("性能面板");
-    folderBox.domElement.setAttribute("id", statsController.id);
-    folderBox.domElement.children[0].style.display = "none";
-    folderBox.domElement.parentElement.parentElement.style.height = "60px";
-    // 将 stats.js 的 DOM 元素添加到控制项的 domElement 属性中
-    // folder.add(statsController, 'stats').name('性能面板');
-    wrapper.stats.dom.style = "position:relative";
-    document.getElementById("usePc")?.appendChild(wrapper.stats.dom);
+  // 创建一个自定义控制项
+  const statsController = { stats: 1, id: "usePc" };
+  const folderBox = folder.add(statsController, "stats").name("性能面板");
+  folderBox.domElement.setAttribute("id", statsController.id);
+  folderBox.domElement.children[0].style.display = "none";
+  folderBox.domElement.parentElement.parentElement.style.height = "60px";
+  // 将 stats.js 的 DOM 元素添加到控制项的 domElement 属性中
+  // folder.add(statsController, 'stats').name('性能面板');
+  wrapper.stats.dom.style = "position:relative";
+  document.getElementById("usePc")?.appendChild(wrapper.stats.dom);
+
+  function remove() {
+    document.removeEventListener("click", handler);
+    gltf3.remove()
+    wrapper.disposeThree();
+    console.log('%c ........wrapper...........','color:#31ef0e',wrapper)
+  }
   return {
     onEquipmentClick,
-    wrapper
+    remove,
+    wrapper,
   };
 }
 
-onMounted(async() => {
-
+onMounted(async () => {
   threeConfig.width = container.value.clientWidth;
   threeConfig.height = container.value.clientHeight;
-  const { wrapper }:any=await useThree();
-  wrapperThree=wrapper
+  const { remove }: any = await useThree();
+  wrapperThree = remove;
   // useMethods();
 });
-onBeforeUnmount(()=>{
-  console.log('%c ..........wrapperThree.........','color:#31ef0e',wrapperThree)
-  wrapperThree.disposeThree()
-  guiThree.destroy()
-})
+onBeforeUnmount(() => {
+  wrapperThree();
+  guiThree.destroy();
+});
 </script>
 
 <template>

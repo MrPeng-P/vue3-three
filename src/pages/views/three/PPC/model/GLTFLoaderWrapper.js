@@ -1,9 +1,11 @@
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
 import { DRACOLoader } from "three/examples/jsm/loaders/DRACOLoader";
+import * as THREE from "three";
+
 class GLTFLoaderWrapper {
   three;
   animationFrameId;
-  constructor(THREE) {
+  constructor() {
     this.loader = new GLTFLoader();
     this.darcloader = new DRACOLoader();
     this.darcloader.setDecoderPath("./glb/draco/");
@@ -50,53 +52,7 @@ class GLTFLoaderWrapper {
       );
     });
   }
-  toloadModel(url) {
-    let that=this
-    fetch(url)
-      .then((response) => response.arrayBuffer())
-      .then((buffer) => {
-        const totalBytes = buffer.byteLength;
-        const chunkSize = 1024 * 1024; // 每次加载的字节数
-        let loadedBytes = 0;
-        let gltf = null;
-        function loadNextChunk(start) {
-          const end = Math.min(start + chunkSize, totalBytes);
-          const chunk = buffer.slice(start, end);
-          loadedBytes += chunk.byteLength;
-          console.log('%c ..........chunk.........','color:#31ef0e',that.loader)
-          that.loader.parse(
-            chunk,
-            url,
-            (result) => {
-              if (!gltf) {
-                gltf = result;
-                scene.add(gltf.scene);
-              } else {
-                const { scene, scenes, cameras, animations } = result;
-                gltf.scene.add(scene);
-                gltf.scenes.push(...scenes);
-                gltf.cameras.push(...cameras);
-                gltf.animations.push(...animations);
-              }
-
-              if (loadedBytes < totalBytes) {
-                loadNextChunk(loadedBytes);
-              }
-            },
-            undefined,
-        function (error) {
-          // 加载出错，将错误对象传递给 reject
-          console.log('%c .......error............','color:#31ef0e',error)
-        }
-          );
-        }
-
-        loadNextChunk(0);
-      })
-      .catch((error) => {
-        console.error("Failed to load GLB file:", error);
-      });
-  }
+ 
   showSkeleton(skeleton) {
     const boneLines = new THREE.Group();
 
@@ -174,6 +130,18 @@ class GLTFLoaderWrapper {
     const deltaTime = this.clock.getDelta();
     this.mixer.update(deltaTime);
   }
+  remove(){
+  
+    this.loader = null;
+    this.darcloader = null;
+
+    this.THREE = null;
+    this.mixer = null;
+    this.clock = null;
+    this.animationActions = [];
+  }
+  
+
 }
 
 export default GLTFLoaderWrapper;
