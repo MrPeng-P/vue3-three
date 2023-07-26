@@ -83,8 +83,8 @@ async function useThree() {
 
 
   // 导入模型
-  const gltf1 = new GLTFLoaderWrapper(THREE);
-  const model = await gltf1.loadModel("./glb/feiji.glb", "");
+  const gltf1 = new GLTFLoaderWrapper();
+  const model = await gltf1.loadModel("./glb/feiji.glb", "",null);
   model.scene.scale.set(5, 5, 5);
   model.scene.position.set(120, 120, 120);
 
@@ -103,8 +103,8 @@ async function useThree() {
   // model2.scene.position.set(120, 7, 7);
   // wrapper.sceneAdd(model2.scene);
 
-  const gltf3 = new GLTFLoaderWrapper(THREE);
-  const model3 = await gltf3.loadModel("./glb/Island.glb", "darc");
+  const gltf3 = new GLTFLoaderWrapper();
+  const model3 = await gltf3.loadModel("./glb/Island.glb", "darc",null);
   model3.scene.scale.set(10, 10, 10);
   wrapper.sceneAdd(model3.scene);
   model3.scene.position.set(6, 6, 6);

@@ -6,7 +6,7 @@ import pCamera from "./PPC/model/cameraComponent";
 import pLight from "./PPC/model/lightComponent";
 import { useGUI } from "./hooks/useGui";
 import TWEEN from "@tweenjs/tween.js";
-import { config } from "process";
+
 
 const container = ref();
 function setTweens(obj: any, newObj: any, duration = 1500) {
@@ -23,8 +23,7 @@ let threeConfig = reactive({
   width: 800,
   height: 600,
 });
-
-
+let process=ref(0)
 function getElementOffset(element: any) {
   const rect = element.getBoundingClientRect();
   const bodyRect = document.body.getBoundingClientRect();
@@ -37,31 +36,35 @@ function getElementOffset(element: any) {
 
 async function useThree() {
   // 创建 ppcThree 实例
-  const wrapper = new ppcThree();
+  let wrapper: any = new ppcThree();
   wrapper.init(threeConfig);
   wrapper.renderer?.setClearColor(0x000000, 1);
   // 使用示例
-  const box = document.getElementById("three"); // 替换 'box' 为您的盒子元素的 ID
-  const offset = getElementOffset(box);
+  let box = document.getElementById("three"); // 替换 'box' 为您的盒子元素的 ID
+  let offset: any = getElementOffset(box);
   //相机
-  const _s = 150;
-  const _k = threeConfig.width / threeConfig.height;
-  const camera = await new pCamera();
+  let _s: any = 150;
+  let _k: any = threeConfig.width / threeConfig.height;
+  let camera: any = await new pCamera();
   camera.setOrthographicCamera(-_s * _k, _s * _k, _s, -_s);
 
   // const camera = await new pCamera(50, _k, 0.1, 2000);
   // camera.addToScene(wrapper.scene);
   //灯光
-  const light = new pLight(0xffffff, 1);
+  let light: any = new pLight(0xffffff, 1);
   light.light.intensity = 20;
   light.addToScene(wrapper.scene);
 
-  const gltf3 = new GLTFLoaderWrapper(THREE);
-  const model3 = await gltf3.loadModel("./glb/car/car.gltf", "darc");
+  let gltf3: any = new GLTFLoaderWrapper();
+
+  let model3: any = await gltf3.loadModel("./glb/portfolio_scene.glb", "darc",function(xhr:any){
+    process.value=xhr.loaded/xhr.total*100
+  });
+
   model3.scene.scale.set(5, 5, 5);
   wrapper.sceneAdd(model3.scene);
   model3.scene.position.set(6, 6, 6);
-  gltf3.setTraverse(model3);
+  // gltf3.setTraverse(model3);
 
   // 点击事件
   function onEquipmentClick(modelBox: any) {
@@ -124,13 +127,13 @@ async function useThree() {
   wrapper.render(camera.camera);
   const { handler } = onEquipmentClick(model3.scene);
 
-  const { gui }: { gui: any } = useGUI(
+  let { gui }: { gui: any } = useGUI(
     wrapper.scene,
     camera.camera,
     wrapper.renderer
   );
   guiThree = gui.value;
-  const folder = gui.value.addFolder("Custom Controls");
+  let folder = gui.value.addFolder("Custom Controls");
 
   // 创建一个自定义控制项
   const statsController = { stats: 1, id: "usePc" };
@@ -142,12 +145,68 @@ async function useThree() {
   // folder.add(statsController, 'stats').name('性能面板');
   wrapper.stats.dom.style = "position:relative";
   document.getElementById("usePc")?.appendChild(wrapper.stats.dom);
+  // 释放 GLTF 模型
+  function releaseModel(gltf: any) {
+    if (model3) {
+      // 移除模型对象
+      wrapper.scene.remove(model3.scene);
+
+      // 清理模型的几何体和材质资源
+      model3.scene.traverse((child: any) => {
+
+        if (child.isMesh) {
+          child.geometry.dispose();
+          child.material.dispose();
+          child.material = null;
+          child.geometry = null;
+
+          if (child.material?.map) {
+            child.material.map.dispose();
+            child.material.map = null;
+          }
+        }
+        if (child.isGroup || child.isObject3D) {
+          clearObject3D(child);
+        }
+      });
+   
+      // 清空场景列表
+      model3.scenes.length = 0;
+      model3.parser.cache.removeAll();
+      // 将模型对象置为 null，帮助垃圾回收
+      model3 = null;
+    }
+  }
+  function clearObject3D(object: any) {
+    const childrenToRemove: any = [];
+
+    // Mark all the children to be removed
+    object.children.forEach((child: any) => {
+      if (child.isGroup || child.isObject3D) {
+        clearObject3D(child);
+        childrenToRemove.push(child);
+      } else if (child.isMesh) {
+        child.geometry.dispose();
+        child.material.dispose();
+        if (child.material.map) {
+          child.material.map.dispose();
+        }
+      }
+    });
+
+    // Remove the marked children from the parent object
+    childrenToRemove.forEach((child: any) => {
+      object.remove(child);
+    });
+  }
 
   function remove() {
     document.removeEventListener("click", handler);
-    gltf3.remove()
+    releaseModel(model3);
     wrapper.disposeThree();
-    console.log('%c ........wrapper...........','color:#31ef0e',wrapper)
+
+    document.getElementById("usePc")?.remove();
+    document.getElementById("three")?.remove();
   }
   return {
     onEquipmentClick,
@@ -166,15 +225,32 @@ onMounted(async () => {
 onBeforeUnmount(() => {
   wrapperThree();
   guiThree.destroy();
+  container.value = "";
+  wrapperThree = null;
+  guiThree = null;
+});
+onUnmounted(() => {
+  console.log("%c ..........onUnmounted.........", "color:#31ef0e", 111);
 });
 </script>
 
 <template>
   <div ref="container" id="three" :style="threeConfig"></div>
+
+  <div class="progress" id="progress" >
+      <el-progress :text-inside="true" :stroke-width="26" :percentage="process" />
+    </div>
 </template>
 <style scoped>
 #three {
   width: 100vw;
   height: 100vh;
+}
+.progress{
+  position: absolute;
+  z-index: 10;
+  left: 30%;
+  width: 50%;
+  top:50%
 }
 </style>

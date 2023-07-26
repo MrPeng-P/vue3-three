@@ -6,7 +6,7 @@ import pCamera from "./PPC/model/cameraComponent";
 import pLight from "./PPC/model/lightComponent";
 import { useGUI } from "./hooks/useGui";
 import TWEEN from "@tweenjs/tween.js";
-import { config } from "process";
+
 
 const container = ref();
 function setTweens(obj: any, newObj: any, duration = 1500) {
@@ -23,7 +23,7 @@ let threeConfig = reactive({
   width: 800,
   height: 600,
 });
-
+let process=ref(0)
 function getElementOffset(element: any) {
   const rect = element.getBoundingClientRect();
   const bodyRect = document.body.getBoundingClientRect();
@@ -56,7 +56,11 @@ async function useThree() {
   light.addToScene(wrapper.scene);
 
   let gltf3: any = new GLTFLoaderWrapper();
-  let model3: any = await gltf3.loadModel("./glb/car/car.gltf", "darc");
+
+  let model3: any = await gltf3.loadModel("./glb/car/car.gltf", "darc",function(xhr:any){
+    process.value=xhr.loaded/xhr.total*100
+  });
+
   model3.scene.scale.set(5, 5, 5);
   wrapper.sceneAdd(model3.scene);
   model3.scene.position.set(6, 6, 6);
@@ -165,9 +169,7 @@ async function useThree() {
           clearObject3D(child);
         }
       });
-      model3.scene.traverse((child: any) => {
-        console.log("%c ..........child.........", "color:#31ef0e", child);
-      });
+   
       // 清空场景列表
       model3.scenes.length = 0;
       model3.parser.cache.removeAll();
@@ -234,10 +236,21 @@ onUnmounted(() => {
 
 <template>
   <div ref="container" id="three" :style="threeConfig"></div>
+
+  <div class="progress" id="progress" >
+      <el-progress :text-inside="true" :stroke-width="26" :percentage="process" />
+    </div>
 </template>
 <style scoped>
 #three {
   width: 100vw;
   height: 100vh;
+}
+.progress{
+  position: absolute;
+  z-index: 10;
+  left: 30%;
+  width: 50%;
+  top:50%
 }
 </style>

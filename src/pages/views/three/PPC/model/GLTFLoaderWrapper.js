@@ -9,6 +9,7 @@ class GLTFLoaderWrapper {
     this.loader = new GLTFLoader();
     this.darcloader = new DRACOLoader();
     this.darcloader.setDecoderPath("./glb/draco/");
+    this.darcloader.setDecoderConfig({ type: "js" });
     this.darcloader.preload();
     this.THREE = THREE;
     this.mixer = null;
@@ -22,7 +23,7 @@ class GLTFLoaderWrapper {
    * @author ppc
    * @date 2023-06-27 15:29:24
    */
-  loadModel(url, type) {
+  loadModel(url, type, progressCallback) {
     if (type) {
       this.loader.setDRACOLoader(this.darcloader);
     }
@@ -44,7 +45,10 @@ class GLTFLoaderWrapper {
           // 加载成功，将 gltf 对象传递给 resolve
           resolve(gltf);
         },
-        undefined,
+        (xhr) => {
+          console.log('%c ..........xhr.........','color:#31ef0e',xhr)
+          progressCallback&&progressCallback(xhr);
+        },
         function (error) {
           // 加载出错，将错误对象传递给 reject
           reject(error);
@@ -52,7 +56,7 @@ class GLTFLoaderWrapper {
       );
     });
   }
- 
+
   showSkeleton(skeleton) {
     const boneLines = new THREE.Group();
 
@@ -130,8 +134,7 @@ class GLTFLoaderWrapper {
     const deltaTime = this.clock.getDelta();
     this.mixer.update(deltaTime);
   }
-  remove(){
-  
+  remove() {
     this.loader = null;
     this.darcloader = null;
 
@@ -140,8 +143,6 @@ class GLTFLoaderWrapper {
     this.clock = null;
     this.animationActions = [];
   }
-  
-
 }
 
 export default GLTFLoaderWrapper;
