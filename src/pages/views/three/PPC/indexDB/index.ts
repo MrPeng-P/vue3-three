@@ -1,4 +1,4 @@
-class IndexedDBWrapper {
+export class IndexedDBWrapper {
   private databaseName: string;
   private version: number;
   private db: IDBDatabase | null;
