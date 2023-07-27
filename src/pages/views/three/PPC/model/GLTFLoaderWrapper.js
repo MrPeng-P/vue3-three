@@ -5,6 +5,7 @@ import * as THREE from "three";
 class GLTFLoaderWrapper {
   three;
   animationFrameId;
+  gltf;
   constructor() {
     this.loader = new GLTFLoader();
     this.darcloader = new DRACOLoader();
@@ -54,6 +55,7 @@ class GLTFLoaderWrapper {
       this.loader.load(
         url,
         (gltf) => {
+          this.gltf=gltf
           this.initAnimate(gltf);
           // this.setWireframeMode(gltf.scene)
           // this.simplifyModel(gltf.scene);
@@ -173,11 +175,20 @@ class GLTFLoaderWrapper {
     this.mixer.update(deltaTime);
   }
   remove() {
+    if (this.mixer) {
+      // 遍历所有动画片段，并依次移除
+      this.gltf.animations.forEach((clip) => {
+        this.mixer.uncacheClip(clip);
+      });
+      this.mixer = null;
+    }
+  
+    cancelAnimationFrame(this.animationFrameId)
+    this.gltf=null
     this.loader = null;
     this.darcloader = null;
-
+    this.animationFrameId=null
     this.THREE = null;
-    this.mixer = null;
     this.clock = null;
     this.animationActions = [];
   }

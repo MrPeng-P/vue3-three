@@ -83,9 +83,9 @@ async function useThree() {
    * @date 2023-07-27 17:24:28
   */
   async function loadModel() {
-    let gltf3: any = new GLTFLoaderWrapper();
+    let gltfModel: any = new GLTFLoaderWrapper();
 
-    let model3: any = await gltf3.loadModel(
+    let model: any = await gltfModel.loadModel(
       "./glb/portfolio_scene.glb",
       "darc",
       function (xhr: any) {
@@ -96,14 +96,15 @@ async function useThree() {
         process.name = xhr.url;
       }
     );
-    model3.scene.scale.set(5, 5, 5);
-    wrapper.sceneAdd(model3.scene);
-    model3.scene.position.set(0, 0, 0);
+    model.scene.scale.set(5, 5, 5);
+    wrapper.sceneAdd(model.scene);
+    model.scene.position.set(0, 0, 0);
     return {
-      model3,
+      model,
+      gltfModel
     };
   }
-  let { model3 } = await loadModel();
+  let { model,gltfModel } = await loadModel();
 
   /**
    * @desc 点击事件
@@ -201,12 +202,12 @@ async function useThree() {
 
   // 释放 GLTF 模型
   function releaseModel(gltf: any) {
-    if (model3) {
+    if (model) {
       // 移除模型对象
-      wrapper.scene.remove(model3.scene);
+      wrapper.scene.remove(model.scene);
 
       // 清理模型的几何体和材质资源
-      model3.scene.traverse((child: any) => {
+      model.scene.traverse((child: any) => {
         if (child.isMesh) {
           child.geometry.dispose();
           child.material.dispose();
@@ -224,10 +225,10 @@ async function useThree() {
       });
 
       // 清空场景列表
-      model3.scenes.length = 0;
-      model3.parser.cache.removeAll();
+      model.scenes.length = 0;
+      model.parser.cache.removeAll();
       // 将模型对象置为 null，帮助垃圾回收
-      model3 = null;
+      model = null;
     }
   }
 
@@ -263,7 +264,8 @@ async function useThree() {
    */
   function remove() {
     document.removeEventListener("click", handler);
-    releaseModel(model3);
+    gltfModel.remove()
+    releaseModel(model);
     wrapper.disposeThree();
 
     document.getElementById("usePc")?.remove();
@@ -276,7 +278,7 @@ async function useThree() {
   // 渲染场景
   wrapper.render(camera.camera);
   //注册事件
-  const { handler } = onEquipmentClick(model3.scene);
+  const { handler } = onEquipmentClick(model.scene);
   const { gui } = setGui();
 
   return {

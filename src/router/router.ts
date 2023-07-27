@@ -63,7 +63,7 @@ export const menuModel = [
         name: "threeCar",
         component: () => import("@/pages/views/three/p-car.vue"),
         meta: {
-          title: "threeCar",
+          title: "汽车glft模型",
           icon: "HomeFilled",
           hidden: false,
           transition: "slide-left",
@@ -74,7 +74,7 @@ export const menuModel = [
         name: "showings",
         component: () => import("@/pages/views/three/p-showings.vue"),
         meta: {
-          title: "showings",
+          title: "房子glb模型",
           icon: "HomeFilled",
           hidden: false,
           transition: "slide-left",
