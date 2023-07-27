@@ -43,9 +43,7 @@ export function useGUI(scene, camera, renderer, light = null) {
     // 更新场景参数
     scene.traverse((child) => {
       if (
-        child.name.indexOf("Object") !== -1 &&
-        child.name.split("_")[1] >= 46 &&
-        child.name.split("_")[1] <= 52
+        child.name.indexOf("car") !== -1 
       ) {
         if (child.isMesh) {
           child.material.wireframe = value;
@@ -79,11 +77,9 @@ export function useGUI(scene, camera, renderer, light = null) {
     console.log("color changed:", value);
     // 更新场景参数
     scene.traverse((child) => {
-      console.log("%c ..........child.........", "color:#31ef0e", child);
+        console.log('%c ..........child.........','color:#31ef0e',child)
       if (
-        child.name.indexOf("Object") !== -1 &&
-        child.name.split("_")[1] >= 46 &&
-        child.name.split("_")[1] <= 52
+        child.name.indexOf("car") !== -1 
       ) {
         if (child.isMesh) {
           child.material.color.set(parameters.color);

@@ -8,6 +8,9 @@ class GLTFLoaderWrapper {
   constructor() {
     this.loader = new GLTFLoader();
     this.darcloader = new DRACOLoader();
+    //进度加载工具
+    this.manager = new THREE.LoadingManager();
+    //draco文件加载
     this.darcloader.setDecoderPath("./glb/draco/");
     this.darcloader.setDecoderConfig({ type: "js" });
     this.darcloader.preload();
@@ -29,11 +32,31 @@ class GLTFLoaderWrapper {
     }
 
     return new Promise((resolve, reject) => {
+      this.manager.onProgress = (url, itemsLoaded, itemsTotal) => {
+        const progress = itemsLoaded / itemsTotal;
+        console.log(`Loading progress: ${progress * 100}%` + url);
+
+        progressCallback &&
+          progressCallback({
+            loaded: itemsLoaded,
+            total: itemsTotal,
+            url: url,
+          });
+      };
+      this.manager.onLoad = () => {
+        console.log("Loading completed.");
+      };
+      this.manager.onError = (url) => {
+        console.error(`Error loading GLTF: ${url}`);
+        reject();
+      };
+      this.loader.manager = this.manager;
       this.loader.load(
         url,
         (gltf) => {
           this.initAnimate(gltf);
-
+          // this.setWireframeMode(gltf.scene)
+          // this.simplifyModel(gltf.scene);
           // gltf.scene.traverse((object) => {
           //   if (object.isSkinnedMesh) {
           //     // 获取骨骼对象
@@ -45,15 +68,30 @@ class GLTFLoaderWrapper {
           // 加载成功，将 gltf 对象传递给 resolve
           resolve(gltf);
         },
-        (xhr) => {
-          console.log('%c ..........xhr.........','color:#31ef0e',xhr)
-          progressCallback&&progressCallback(xhr);
-        },
+        undefined,
         function (error) {
           // 加载出错，将错误对象传递给 reject
           reject(error);
         }
       );
+    });
+  }
+  /**
+   * @desc 开启线条模式
+   * @param
+   * @return
+   * @author ppc
+   * @date 2023-07-27 15:37:48
+   */
+  setWireframeMode(model,wireframe=true) {
+    model.traverse((child) => {
+      if (child.isMesh) {
+        const material = new THREE.MeshBasicMaterial({
+          color: 0xffffff,
+          wireframe: wireframe,
+        });
+        child.material = material;
+      }
     });
   }
 
@@ -89,7 +127,7 @@ class GLTFLoaderWrapper {
     scene.add(boneLines);
   }
   setTraverse(model) {
-    console.log("%c ..........model.........", "color:#31ef0e", model);
+    //疑问点 可能造成内存泄漏
     model.scene.traverse((child) => {
       if (child.isMesh) {
         const material = child.material;

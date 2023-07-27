@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>漫天星光动画</title>
+  <style>
+    body { margin: 0; overflow: hidden; }
+    canvas { display: block; }
+  </style>
+</head>
+<body>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/110/three.min.js"></script>
+  <script>
+    const scene = new THREE.Scene();
+    const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+    const renderer = new THREE.WebGLRenderer();
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    document.body.appendChild(renderer.domElement);
+
+    const starCount = 1000;
+    const stars = new THREE.Group();
+
+    for (let i = 0; i < starCount; i++) {
+      const star = new THREE.Vector3(
+        (Math.random() - 0.5) * 2000,
+        (Math.random() - 0.5) * 2000,
+        (Math.random() - 0.5) * 2000
+      );
+      stars.add(new THREE.PointLight(0xffffff, 1, 500, 1).add(new THREE.Mesh(
+        new THREE.SphereGeometry(Math.random(), Math.random(), 6),
+        new THREE.MeshBasicMaterial({ color: 0xffffff })
+      )));
+    }
+
+    scene.add(stars);
+
+    camera.position.z = 5;
+
+    function animate() {
+      requestAnimationFrame(animate);
+      
+      stars.rotation.x += 0.01;
+      stars.rotation.y += 0.01;
+
+      renderer.render(scene, camera);
+    }
+
+    animate();
+  </script>
+</body>
+</html>

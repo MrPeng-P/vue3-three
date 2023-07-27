@@ -4,9 +4,8 @@ import ppcThree from "./PPC/model/ppcThree";
 import GLTFLoaderWrapper from "./PPC/model/GLTFLoaderWrapper";
 import pCamera from "./PPC/model/cameraComponent";
 import pLight from "./PPC/model/lightComponent";
-import { useGUI } from "./hooks/useGui";
+import { useGUI } from "./hooks/useGuiScene";
 import TWEEN from "@tweenjs/tween.js";
-
 
 const container = ref();
 function setTweens(obj: any, newObj: any, duration = 1500) {
@@ -16,14 +15,28 @@ function setTweens(obj: any, newObj: any, duration = 1500) {
   ro.onUpdate(function () {}); //执行回调
   ro.start();
 }
-let wrapperThree: any = undefined;
-let guiThree: any = undefined;
-let threeConfig = reactive({
-  id: "three",
-  width: 800,
-  height: 600,
+//移除three
+let removeThree: any = undefined;
+//移除gui
+let removeGui: any = undefined;
+/**
+ * @desc 设置加载进度
+ * @param
+ * @return
+ * @author ppc
+ * @date 2023-07-27 17:16:12
+ */
+let process = reactive({
+  xhr: 0,
+  name: "",
 });
-let process=ref(0)
+/**
+ * @desc 设置点击偏移
+ * @param
+ * @return
+ * @author ppc
+ * @date 2023-07-27 17:16:06
+ */
 function getElementOffset(element: any) {
   const rect = element.getBoundingClientRect();
   const bodyRect = document.body.getBoundingClientRect();
@@ -35,12 +48,20 @@ function getElementOffset(element: any) {
 }
 
 async function useThree() {
+  //----start---基本设置
+  let threeConfig = reactive({
+    id: "three",
+    width: 800,
+    height: 600,
+  });
+  threeConfig.width = container.value.clientWidth;
+  threeConfig.height = container.value.clientHeight;
   // 创建 ppcThree 实例
   let wrapper: any = new ppcThree();
   wrapper.init(threeConfig);
   wrapper.renderer?.setClearColor(0x000000, 1);
   // 使用示例
-  let box = document.getElementById("three"); // 替换 'box' 为您的盒子元素的 ID
+  let box = document.getElementById("three"); 
   let offset: any = getElementOffset(box);
   //相机
   let _s: any = 150;
@@ -48,25 +69,49 @@ async function useThree() {
   let camera: any = await new pCamera();
   camera.setOrthographicCamera(-_s * _k, _s * _k, _s, -_s);
 
-  // const camera = await new pCamera(50, _k, 0.1, 2000);
-  // camera.addToScene(wrapper.scene);
   //灯光
   let light: any = new pLight(0xffffff, 1);
   light.light.intensity = 20;
   light.addToScene(wrapper.scene);
+  //----end---基本设置
 
-  let gltf3: any = new GLTFLoaderWrapper();
+  /**
+   * @desc 模型加载
+   * @param 
+   * @return 
+   * @author ppc
+   * @date 2023-07-27 17:24:28
+  */
+  async function loadModel() {
+    let gltf3: any = new GLTFLoaderWrapper();
 
-  let model3: any = await gltf3.loadModel("./glb/portfolio_scene.glb", "darc",function(xhr:any){
-    process.value=xhr.loaded/xhr.total*100
-  });
+    let model3: any = await gltf3.loadModel(
+      "./glb/portfolio_scene.glb",
+      "darc",
+      function (xhr: any) {
+        process.xhr = xhr.total
+          ? (xhr.loaded / xhr.total) * 100
+          : (xhr.loaded / 9465724) * 100;
+        process.xhr = parseFloat(process.xhr.toFixed(2));
+        process.name = xhr.url;
+      }
+    );
+    model3.scene.scale.set(5, 5, 5);
+    wrapper.sceneAdd(model3.scene);
+    model3.scene.position.set(0, 0, 0);
+    return {
+      model3,
+    };
+  }
+  let { model3 } = await loadModel();
 
-  model3.scene.scale.set(5, 5, 5);
-  wrapper.sceneAdd(model3.scene);
-  model3.scene.position.set(6, 6, 6);
-  // gltf3.setTraverse(model3);
-
-  // 点击事件
+  /**
+   * @desc 点击事件
+   * @param 
+   * @return 
+   * @author ppc
+   * @date 2023-07-27 17:24:17
+  */
   function onEquipmentClick(modelBox: any) {
     const equipmentList: any = [];
     let cheyiList: any = [];
@@ -121,30 +166,39 @@ async function useThree() {
     };
   }
 
-  // 使用封装的功能
-  // wrapper.createCube();
-  // 渲染场景
-  wrapper.render(camera.camera);
-  const { handler } = onEquipmentClick(model3.scene);
+  /**
+   * @desc 控制面板
+   * @param
+   * @return
+   * @author ppc
+   * @date 2023-07-27 17:22:56
+   */
+  function setGui() {
+    let { gui }: { gui: any } = useGUI(
+      wrapper.scene,
+      camera.camera,
+      wrapper.renderer,
+      light
+    );
 
-  let { gui }: { gui: any } = useGUI(
-    wrapper.scene,
-    camera.camera,
-    wrapper.renderer
-  );
-  guiThree = gui.value;
-  let folder = gui.value.addFolder("Custom Controls");
+    let folder = gui.value.addFolder("Custom Controls");
 
-  // 创建一个自定义控制项
-  const statsController = { stats: 1, id: "usePc" };
-  const folderBox = folder.add(statsController, "stats").name("性能面板");
-  folderBox.domElement.setAttribute("id", statsController.id);
-  folderBox.domElement.children[0].style.display = "none";
-  folderBox.domElement.parentElement.parentElement.style.height = "60px";
-  // 将 stats.js 的 DOM 元素添加到控制项的 domElement 属性中
-  // folder.add(statsController, 'stats').name('性能面板');
-  wrapper.stats.dom.style = "position:relative";
-  document.getElementById("usePc")?.appendChild(wrapper.stats.dom);
+    // 创建一个自定义控制项
+    const statsController = { stats: 1, id: "usePc" };
+    const folderBox = folder.add(statsController, "stats").name("性能面板");
+    folderBox.domElement.setAttribute("id", statsController.id);
+    folderBox.domElement.children[0].style.display = "none";
+    folderBox.domElement.parentElement.parentElement.style.height = "60px";
+    // 将 stats.js 的 DOM 元素添加到控制项的 domElement 属性中
+    // folder.add(statsController, 'stats').name('性能面板');
+    wrapper.stats.dom.style = "position:relative";
+    document.getElementById("usePc")?.appendChild(wrapper.stats.dom);
+    return {
+      gui,
+    };
+  }
+
+
   // 释放 GLTF 模型
   function releaseModel(gltf: any) {
     if (model3) {
@@ -153,7 +207,6 @@ async function useThree() {
 
       // 清理模型的几何体和材质资源
       model3.scene.traverse((child: any) => {
-
         if (child.isMesh) {
           child.geometry.dispose();
           child.material.dispose();
@@ -169,7 +222,7 @@ async function useThree() {
           clearObject3D(child);
         }
       });
-   
+
       // 清空场景列表
       model3.scenes.length = 0;
       model3.parser.cache.removeAll();
@@ -177,6 +230,8 @@ async function useThree() {
       model3 = null;
     }
   }
+
+
   function clearObject3D(object: any) {
     const childrenToRemove: any = [];
 
@@ -199,7 +254,13 @@ async function useThree() {
       object.remove(child);
     });
   }
-
+  /**
+   * @desc 清除three
+   * @param
+   * @return
+   * @author ppc
+   * @date 2023-07-27 17:20:22
+   */
   function remove() {
     document.removeEventListener("click", handler);
     releaseModel(model3);
@@ -208,49 +269,63 @@ async function useThree() {
     document.getElementById("usePc")?.remove();
     document.getElementById("three")?.remove();
   }
+
+
+  // 使用封装的功能
+  // wrapper.createCube();
+  // 渲染场景
+  wrapper.render(camera.camera);
+  //注册事件
+  const { handler } = onEquipmentClick(model3.scene);
+  const { gui } = setGui();
+
   return {
     onEquipmentClick,
     remove,
     wrapper,
+    gui,
   };
 }
 
 onMounted(async () => {
-  threeConfig.width = container.value.clientWidth;
-  threeConfig.height = container.value.clientHeight;
-  const { remove }: any = await useThree();
-  wrapperThree = remove;
+  const { remove, gui }: any = await useThree();
+  removeThree = remove;
+  removeGui = gui.value;
   // useMethods();
 });
 onBeforeUnmount(() => {
-  wrapperThree();
-  guiThree.destroy();
+  removeThree();
+  removeGui.destroy();
   container.value = "";
-  wrapperThree = null;
-  guiThree = null;
+  removeThree = null;
+  removeGui = null;
 });
-onUnmounted(() => {
-  console.log("%c ..........onUnmounted.........", "color:#31ef0e", 111);
-});
+onUnmounted(() => {});
 </script>
 
 <template>
-  <div ref="container" id="three" :style="threeConfig"></div>
+  <div ref="container" id="three" ></div>
 
-  <div class="progress" id="progress" >
-      <el-progress :text-inside="true" :stroke-width="26" :percentage="process" />
-    </div>
+  <div v-if="process.xhr < 100" class="progress" id="progress">
+    <el-progress
+      :text-inside="true"
+      :stroke-width="26"
+      :percentage="process.xhr"
+    />
+
+    <div>{{ process.name }}加载完成</div>
+  </div>
 </template>
 <style scoped>
 #three {
   width: 100vw;
   height: 100vh;
 }
-.progress{
+.progress {
   position: absolute;
   z-index: 10;
   left: 30%;
   width: 50%;
-  top:50%
+  top: 50%;
 }
 </style>
