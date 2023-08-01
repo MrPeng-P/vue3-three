@@ -18,13 +18,15 @@ class CameraComponent {
     this.camera.position.set(200, 200, 200); //设置相机位置
     return this.camera
   }
-  setPerspectiveCamera(){
-    const fov = 20
-    const near = 0.1
-    const far = 2000
+  setPerspectiveCamera(fov, aspect, near, far){
+    // const fov = 20
+    // const near = 0.1
+    // const far = 2000
     this.camera=new THREE.PerspectiveCamera(fov, aspect, near, far)
-    this.camera.position.set(0, 0, 0); //设置相机位置
-
+    this.camera.position.set(200, 200, 200); //设置相机位置
+    this.camera.position.set(2,10, 0);
+    this.camera.lookAt(1000, 10, 0);
+    return this.camera
   }
 }
 

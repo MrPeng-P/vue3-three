@@ -46,7 +46,42 @@ function getElementOffset(element: any) {
 
   return { offsetX, offsetY };
 }
+function useDom() {
+  // 创建场景、相机等，省略部分代码...
 
+  // 创建一个模型内的物体
+  const boxGeometry = new THREE.BoxGeometry(0.2, 0.2, 0.2);
+  const boxMaterial = new THREE.MeshBasicMaterial({ color: 0xff0000 });
+  const boxMesh = new THREE.Mesh(boxGeometry, boxMaterial);
+
+  // 设置物体在模型内的初始位置
+  boxMesh.position.set(-3, 1.6,6);
+
+  // 监听键盘按键事件
+  document.addEventListener("keydown", (event) => {
+    // 获取按下的按键
+    const key = event.key.toLowerCase();
+
+    // 根据按键更新物体的位置
+    switch (key) {
+      case "arrowup":
+        boxMesh.position.y += 0.1; // 向上移动物体
+        break;
+      case "arrowdown":
+        boxMesh.position.y -= 0.1; // 向下移动物体
+        break;
+      case "arrowleft":
+        boxMesh.position.x -= 0.1; // 向左移动物体
+        break;
+      case "arrowright":
+        boxMesh.position.x += 0.1; // 向右移动物体
+        break;
+    }
+  });
+  return {
+    boxMesh,
+  };
+}
 async function useThree() {
   //----start---基本设置
   let threeConfig = reactive({
@@ -61,32 +96,34 @@ async function useThree() {
   wrapper.init(threeConfig);
   wrapper.renderer?.setClearColor(0x000000, 1);
   // 使用示例
-  let box = document.getElementById("three"); 
+  let box = document.getElementById("three");
   let offset: any = getElementOffset(box);
   //相机
-  let _s: any = 150;
+  let _s: any = 100;
   let _k: any = threeConfig.width / threeConfig.height;
   let camera: any = await new pCamera();
-  camera.setOrthographicCamera(-_s * _k, _s * _k, _s, -_s);
+  let PerspectiveCamera = camera.setPerspectiveCamera(100, _k, 0.1, 1000);
+  PerspectiveCamera.position.set(-26, 7, 0);
+  PerspectiveCamera.lookAt(-3, 1.6,6);
 
   //灯光
   let light: any = new pLight(0xffffff, 1);
   light.light.intensity = 20;
   light.addToScene(wrapper.scene);
   //----end---基本设置
-
+  const {boxMesh}=useDom()
   /**
    * @desc 模型加载
-   * @param 
-   * @return 
+   * @param
+   * @return
    * @author ppc
    * @date 2023-07-27 17:24:28
-  */
+   */
   async function loadModel() {
     let gltf3: any = new GLTFLoaderWrapper();
 
     let model3: any = await gltf3.loadModel(
-      "./glb/car/car.gltf",
+      "./glb/fang/fang.gltf",
       "darc",
       function (xhr: any) {
         process.xhr = xhr.total
@@ -99,6 +136,7 @@ async function useThree() {
     model3.scene.scale.set(5, 5, 5);
     wrapper.sceneAdd(model3.scene);
     model3.scene.position.set(0, 0, 0);
+    model3.scene.add(boxMesh)
     return {
       model3,
     };
@@ -107,11 +145,11 @@ async function useThree() {
 
   /**
    * @desc 点击事件
-   * @param 
-   * @return 
+   * @param
+   * @return
    * @author ppc
    * @date 2023-07-27 17:24:17
-  */
+   */
   function onEquipmentClick(modelBox: any) {
     const equipmentList: any = [];
     let cheyiList: any = [];
@@ -198,7 +236,6 @@ async function useThree() {
     };
   }
 
-
   // 释放 GLTF 模型
   function releaseModel(gltf: any) {
     if (model3) {
@@ -230,7 +267,6 @@ async function useThree() {
       model3 = null;
     }
   }
-
 
   function clearObject3D(object: any) {
     const childrenToRemove: any = [];
@@ -270,7 +306,6 @@ async function useThree() {
     document.getElementById("three")?.remove();
   }
 
-
   // 使用封装的功能
   // wrapper.createCube();
   // 渲染场景
@@ -304,7 +339,7 @@ onUnmounted(() => {});
 </script>
 
 <template>
-  <div ref="container" id="three" ></div>
+  <div ref="container" id="three"></div>
 
   <div v-if="process.xhr < 100" class="progress" id="progress">
     <el-progress
