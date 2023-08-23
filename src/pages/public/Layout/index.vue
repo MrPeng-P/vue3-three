@@ -21,7 +21,7 @@ export default defineComponent({
         const router = useRouter()
         const route = useRoute()
         // 不许缓存 暂定 操作
-        let excludeList: any = reactive(['p-car','p-showings','p-test'])
+        let excludeList: any = reactive(['p-car','p-showings','p-test','p-city'])
         routeList.map((item: any) => {
             if (item.path.includes('operate')) {
                 excludeList.push(item.path.split('p-')[1])

@@ -81,6 +81,17 @@ export const menuModel = [
         },
       },
       {
+        path: "three-p-city",
+        name: "city",
+        component: () => import("@/pages/views/three/p-city.vue"),
+        meta: {
+          title: "城市glb模型",
+          icon: "HomeFilled",
+          hidden: false,
+          transition: "slide-left",
+        },
+      },
+      {
         path: "three-p-test",
         name: "threeTest",
         component: () => import("@/pages/views/three/p-test.vue"),

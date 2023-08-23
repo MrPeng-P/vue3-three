@@ -58,13 +58,13 @@ class GLTFLoaderWrapper {
           this.gltf=gltf
           this.initAnimate(gltf);
           // this.setWireframeMode(gltf.scene)
-          // this.simplifyModel(gltf.scene);
+          // // this.simplifyModel(gltf.scene);
           // gltf.scene.traverse((object) => {
           //   if (object.isSkinnedMesh) {
           //     // 获取骨骼对象
           //     const skeleton = object.skeleton;
           //     // 显示骨骼
-          //     showSkeleton(skeleton);
+          //     this.showSkeleton(skeleton);
           //   }
           // });
           // 加载成功，将 gltf 对象传递给 resolve
@@ -174,6 +174,7 @@ class GLTFLoaderWrapper {
     const deltaTime = this.clock.getDelta();
     this.mixer.update(deltaTime);
   }
+  
   remove() {
     if (this.mixer) {
       // 遍历所有动画片段，并依次移除
