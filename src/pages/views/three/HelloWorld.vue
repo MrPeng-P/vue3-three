@@ -1,141 +1,315 @@
-<script setup lang="ts">
-import * as THREE from 'three';
-import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'
-import { GLTF, GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
-import { GUI } from "dat.gui";
-import { ref } from 'vue'
-import { ThreeGui } from './gui'
-
+<script lang="ts" setup>
+import * as THREE from "three";
+import ppcThree from "./PPC/model/ppcThree";
+import GLTFLoaderWrapper from "./PPC/model/GLTFLoaderWrapper";
+import pCamera from "./PPC/model/cameraComponent";
+import pLight from "./PPC/model/lightComponent";
+import {ResourceTracker} from "./PPC/model/ResourceTracker";
+import { useGUI } from "./hooks/useGui";
+import TWEEN from "@tweenjs/tween.js";
+// 引入CSS2渲染器CSS2DRenderer和CSS2模型对象CSS3DObject
+import { CSS3DObject } from "three/examples/jsm/renderers/CSS3DRenderer.js";
+const resTracker = new ResourceTracker();
+const track = resTracker.track.bind(resTracker)
+const container = ref();
+function setTweens(obj: any, newObj: any, duration = 1500) {
+  var ro = new TWEEN.Tween(obj); //创建tween动画实例
+  ro.to(newObj, duration); //变化后的对象以及动画持续时间
+  ro.easing(TWEEN.Easing.Sinusoidal.InOut); //动画缓动函数
+  ro.onUpdate(function () {}); //执行回调
+  ro.start();
+}
+//移除three
+let removeThree: any = undefined;
+//移除gui
+let removeGui: any = undefined;
 /**
-   * @desc 基础形状 球 方形
-   * @param 
-   * @return 
-   * @author ppc
-   * @date 2022-09-16 22:24:52
-   */
-/**
- * 创建场景对象Scene
- */
-var scene = new THREE.Scene();
-// 辅助坐标系  参数250表示坐标系大小，可以根据场景大小去设置
-var axisHelper = new THREE.AxesHelper(250); //AxesHelper 新版名
-scene.add(axisHelper);
-/**
- * 创建网格模型
- */
-// //长方体 参数：长，宽，高
-// var geometry = new THREE.BoxGeometry(100, 100, 100);
-// // 球体 参数：半径60  经纬度细分数40,40
-// var geometry = new THREE.SphereGeometry(60, 40, 40);
-// // 圆柱  参数：圆柱面顶部、底部直径50,50   高度100  圆周分段数
-// var geometry = new THREE.CylinderGeometry(50, 50, 100, 25);
-// // 正八面体
-// var geometry = new THREE.OctahedronGeometry(50);
-// // 正十二面体
-// var geometry = new THREE.DodecahedronGeometry(50);
-// // 正二十面体
-// var geometry = new THREE.IcosahedronGeometry(50);
-
-
-// 平行光 太阳光
-var directiona = new THREE.DirectionalLight(0xffffff)
-scene.add(directiona);
-
-
-/**
- * 相机设置
- */
-var width = window.innerWidth; //窗口宽度
-var height = window.innerHeight; //窗口高度
-var k = width / height; //窗口宽高比
-var s = 100; //三维场景显示范围控制系数，系数越大，显示的范围越大
-//创建相机对象
-var camera = new THREE.OrthographicCamera(-s * k, s * k, s, -s, 1, 1000);
-camera.position.set(200, 300, 200); //设置相机位置
-camera.lookAt(scene.position); //设置相机方向(指向的场景对象)
-/**
- * 创建渲染器对象
- */
-var renderer = new THREE.WebGLRenderer();
-renderer.setSize(width, height); //设置渲染区域尺寸
-renderer.setClearColor(0xb9d3ff, 1); //设置背景颜色
-document.body.appendChild(renderer.domElement); //body元素中插入canvas对象
-//执行渲染操作   指定场景、相机作为参数 
-
-/**
- * @desc  鼠标 键盘 操作
- * @param 
- * @return 
+ * @desc 设置加载进度
+ * @param
+ * @return
  * @author ppc
- * @date 2022-09-18 20:02:06
+ * @date 2023-07-27 17:16:12
  */
-var clock = new THREE.Clock()
-const myGui = new ThreeGui()
-function render() {
-  renderer.render(scene, camera); //执行渲染操作
+let process = reactive({
+  xhr: 0,
+  name: "",
+});
 
-  if (myGui.mixerList.length > 0) {
-  const  clockValue=clock.getDelta()
-    myGui.mixerList.forEach((mixer: any,index:number) => {
-      mixer.update(clockValue)
-    });
+/**
+ * @desc 设置点击偏移
+ * @param
+ * @return
+ * @author ppc
+ * @date 2023-07-27 17:16:06
+ */
+function getElementOffset(element: any) {
+  const rect = element.getBoundingClientRect();
+  const bodyRect = document.body.getBoundingClientRect();
 
-  }
-  requestAnimationFrame(render)
+  const offsetX = rect.left - bodyRect.left;
+  const offsetY = rect.top - bodyRect.top;
+
+  return { offsetX, offsetY };
 }
 
-render();
+async function useThree() {
+  //----start---基本设置
+  let threeConfig = reactive({
+    id: "three",
+    width: 800,
+    height: 600,
+  });
+  threeConfig.width = container.value.clientWidth;
+  threeConfig.height = container.value.clientHeight;
+  // 创建 ppcThree 实例
+  let wrapper: any = track(new ppcThree());
+  wrapper.init(threeConfig);
+  wrapper.renderer?.setClearColor(0x000000, 1);
+  // 使用示例
+  let box = track(document.getElementById("three"));
+  let offset: any = getElementOffset(box);
+  //相机
+  let _s: any = 150;
+  let _k: any = threeConfig.width / threeConfig.height;
+  let camera: any = await track(new pCamera());
+  camera.setOrthographicCamera(-_s * _k, _s * _k, _s, -_s);
 
+  //灯光
+  let light: any = track(new pLight(0xffffff, 1));
+  light.light.intensity = 20;
+  light.addToScene(wrapper.scene);
+  //----end---基本设置
 
-myGui.defaultScene(scene, '场地')
+  /**
+   * @desc 模型加载
+   * @param
+   * @return
+   * @author ppc
+   * @date 2023-07-27 17:24:28
+   */
+  async function loadModel() {
+    let gltf3: any = track(new GLTFLoaderWrapper(),'GLTFLoaderWrapper');
 
-// 加载
-const loader = new GLTFLoader();
-loader.load('src/assets/glb/feiji.glb', function (gltf: GLTF) {
-  console.log('控制台查看加载gltf文件返回的对象结构', gltf);
+    let model3: any = await track(gltf3.loadModel(
+      "./glb/YCK_Map_6.glb",
+      "darc",
+      function (xhr: any) {
+        process.xhr = xhr.total
+          ? (xhr.loaded / xhr.total) * 100
+          : (xhr.loaded / 9465724) * 100;
+        process.xhr = parseFloat(process.xhr.toFixed(2));
+        process.name = xhr.url;
+      }
+    ));
+    model3.scene.scale.set(5, 5, 5);
+    wrapper.sceneAdd(model3.scene);
+    model3.scene.position.set(0, 0, 0);
+    const nameList = ["Car2_MESH", "Car3_MESH"];
+    wrapper.cssHtmlInit()
+    model3.scene?.traverse((mesh: any) => {
+      if (!(mesh instanceof THREE.Mesh)) return undefined;
+      if (!nameList.includes(mesh.name)) return undefined;
+      // 创建一个HTML元素
+      const htmlElement =track(document.createElement("div"));
+      htmlElement.textContent = mesh.name;
+      htmlElement.classList.add("dialog-mesh"); // 添加自定义的类名
+      htmlElement.style.zIndex = '1'; // 设置z-index为较小值，让模型位于上层
+   
 
-  gltf.scene.scale.set(3, 3, 3);
-  gltf.scene.position.set(100, 100, 20)
-  myGui.resolveGltf(gltf)
-  myGui.defaultScene(gltf.scene, 'feiji')
-  // 返回的场景对象gltf.scene插入到threejs场景中
-  scene.add(gltf.scene);
-}, function (xhr) {
-  if (xhr.loaded / xhr.total == 1) {
+      // 创建CSS3DObject，并将HTML元素嵌入到其中
+      const cssObject = track(new CSS3DObject(htmlElement),'CSS3DObject');
+      cssObject.position.set(0, 0, 0); // 设置在3D场景中的位置
+      cssObject.scale.set(0.1, 0.1, 1); // 设置在3D场景中的位置
+      
+      mesh.add(cssObject);
+
+      return undefined;
+    });
+  
+    return {
+      model3,
+      
+    };
   }
-}, function (error) {
+  let { model3 } = await loadModel();
 
-  console.log('An error happened');
+  /**
+   * @desc 点击事件
+   * @param
+   * @return
+   * @author ppc
+   * @date 2023-07-27 17:24:17
+   */
+  function onEquipmentClick(modelBox: any) {
+    const equipmentList: any = [];
+    let cheyiList: any = [];
+    modelBox?.traverse((mesh: any) => {
+      // if(mesh instanceof THREE.Group){
+      //     mesh.position.y=-50
+      // }
+      if (!(mesh instanceof THREE.Mesh)) return undefined;
+      const { material } = mesh;
+      mesh.material = material.clone();
+      equipmentList.push(mesh);
 
-})
+      if (mesh.name.split("_")[1] >= "46" && mesh.name.split("_")[1] <= "52") {
+        cheyiList.push(mesh);
+      }
+      return undefined;
+    });
 
-loader.load('src/assets/glb/feiji.glb', function (gltf: GLTF) {
-  console.log('控制台查看加载gltf文件返回的对象结构', gltf);
+    const handler = (event: MouseEvent) => {
+      const el = container.value as HTMLElement;
+      const mouse = new THREE.Vector2(
+        ((event.clientX - offset.offsetX) / el.offsetWidth) * 2 - 1,
+        -((event.clientY - offset.offsetY) / el.offsetHeight) * 2 + 1
+      );
+      const raycaster = new THREE.Raycaster();
+      raycaster.setFromCamera(mouse, camera.camera);
+      const intersects = raycaster.intersectObject(modelBox, true);
+      if (intersects.length <= 0) return undefined;
+      const equipment = <any>intersects[0].object;
+      if (!equipment) return undefined;
 
-  gltf.scene.scale.set(3, 3, 3);
-  gltf.scene.position.set(20, 20, 20)
-  myGui.resolveGltf(gltf)
-  myGui.defaultScene(gltf.scene, 'feiji2')
-  // 返回的场景对象gltf.scene插入到threejs场景中
-  scene.add(gltf.scene);
-}, function (xhr) {
-  if (xhr.loaded / xhr.total == 1) {
+      if (!equipment.currentHex) {
+        equipment.currentHex = equipment.material.color.getHex();
+        equipment.material.color.setHex(0x00ff00);
+      } else {
+        equipment.material.color.setHex(equipment.currentHex);
+        equipment.currentHex = undefined;
+      }
+
+      return undefined;
+    };
+    document.addEventListener("click", handler);
+    return {
+      handler,
+    };
   }
-}, function (error) {
 
-  console.log('An error happened');
+  /**
+   * @desc 控制面板
+   * @param
+   * @return
+   * @author ppc
+   * @date 2023-07-27 17:22:56
+   */
+  function setGui() {
+    let { gui }: { gui: any } = track(useGUI(
+      wrapper.scene,
+      camera.camera,
+      wrapper.renderer,
+      light
+    ));
 
-})
+    let folder = gui.value.addFolder("Custom Controls");
 
-var controls = new OrbitControls(camera, renderer.domElement); //创建控件对象
-controls.addEventListener('change', render); //监听鼠标、键盘事件
+    // 创建一个自定义控制项
+    const statsController = { stats: 1, id: "usePc" };
+    const folderBox = folder.add(statsController, "stats").name("性能面板");
+    folderBox.domElement.setAttribute("id", statsController.id);
+    folderBox.domElement.children[0].style.display = "none";
+    folderBox.domElement.parentElement.parentElement.style.height = "60px";
+    // 将 stats.js 的 DOM 元素添加到控制项的 domElement 属性中
+    // folder.add(statsController, 'stats').name('性能面板');
+    wrapper.stats.dom.style = "position:relative";
+    const usePc=track(document.getElementById("usePc"))
+    usePc?.appendChild(wrapper.stats.dom);
+    return {
+      gui,
+    };
+  }
 
+  // 释放 GLTF 模型
+ 
+
+ 
+  /**
+   * @desc 清除three
+   * @param
+   * @return
+   * @author ppc
+   * @date 2023-07-27 17:20:22
+   */
+  function remove() {
+    document.removeEventListener("click", handler);
+    wrapper.disposeThree();
+    document.getElementById("usePc")?.remove();
+    document.getElementById("three")?.remove();
+  }
+
+  // 使用封装的功能
+  // wrapper.createCube();
+  // 渲染场景
+  wrapper.render(camera.camera);
+  //注册事件
+  const { handler } = onEquipmentClick(model3.scene);
+  const { gui } = setGui();
+
+  return {
+    onEquipmentClick,
+    remove,
+    wrapper,
+    gui,
+  };
+}
+
+onMounted(async () => {
+  const { remove, gui }: any = await useThree();
+  removeThree = remove;
+  removeGui = gui.value;
+  // useMethods();
+});
+onBeforeUnmount(() => {
+  removeThree();
+  removeGui.destroy();
+  container.value = "";
+  removeThree = null;
+  removeGui = null;
+  resTracker.dispose()
+});
+onUnmounted(() => {});
 </script>
 
-<template></template>
+<template>
+  <div ref="container" id="three"></div>
+  <!-- <div id="tag">标签内容</div> -->
 
+  <div v-if="process.xhr < 100" class="progress" id="progress">
+    <el-progress
+      :text-inside="true"
+      :stroke-width="26"
+      :percentage="process.xhr"
+    />
+
+    <div>{{ process.name }}加载完成</div>
+  </div>
+</template>
 <style scoped>
-.read-the-docs {
-  color: #888;
+#three {
+  width: 100vw;
+  height: 100vh;
+}
+#tag {
+  width: 20vw;
+  height: 20vh;
+  background-color: red;
+}
+.progress {
+  position: absolute;
+  z-index: 10;
+  left: 30%;
+  width: 50%;
+  top: 50%;
+}
+</style>
+<style>
+.dialog-mesh {
+  border-radius: 10px;
+  background-color: rgba(255, 255, 255, 0.8);
+  color: #000;
+  padding: 10px 20px;
+  backface-visibility: hidden;
+  font-size: 12px;
 }
 </style>

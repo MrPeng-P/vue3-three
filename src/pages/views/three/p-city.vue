@@ -89,7 +89,7 @@ async function useThree() {
     let gltf3: any = track(new GLTFLoaderWrapper());
 
     let model3: any = await track(gltf3.loadModel(
-      "./glb/car/car.gltf",
+      "./glb/Soldier.glb",
       "darc",
       function (xhr: any) {
         process.xhr = xhr.total
@@ -142,24 +142,7 @@ async function useThree() {
       if (intersects.length <= 0) return undefined;
       const equipment = <any>intersects[0].object;
       if (!equipment) return undefined;
-      equipmentList.forEach((child: any) => {
-        child.material.emissive.setHex(child.currentHex);
-      });
-
-      if (
-        equipment.name.split("_")[1] >= 46 &&
-        equipment.name.split("_")[1] <= 52
-      ) {
-        cheyiList.forEach((child: any) => {
-          child.currentHex =
-            child.currentHex ?? child.material.emissive.getHex();
-          child.material.emissive.setHex(0x00ff00);
-        });
-      } else {
-        equipment.currentHex =
-          equipment.currentHex ?? equipment.material.emissive.getHex();
-        equipment.material.emissive.setHex(0x00ff00);
-      }
+      
 
       return undefined;
     };
