@@ -63,6 +63,9 @@ export class pThree {
         this._controls.addEventListener('change', this.render.bind(this)); //监听鼠标、键盘事件
         this.render()
     }
+    get controls(){
+        return this._controls
+    }
     /**
      * @desc 渲染
      * @param 
