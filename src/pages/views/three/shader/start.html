@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>http://www.webgl3d.cn/</title>
+</head>
+
+<body>
+
+    <script type="module">
+        if (navigator.gpu) {
+            console.log('你的浏览器支持WebGPU。');
+            // 浏览器请求GPU适配器
+            const adapter = await navigator.gpu.requestAdapter();
+            // 获取GPU设备对象，通过GPU设备对象device的WebGPU API可以控制GPU渲染过程
+            const device = await adapter.requestDevice();
+            console.log('适配器adapter', adapter);
+            console.log('GPU设备对象device', device);
+            // 创建渲染管线
+            const pipeline = device.createRenderPipeline()
+            // 创建GPU命令对象
+            const commandEncoder = device.createCommandEncoder()
+
+
+            //webGPU API和Canvans画布
+            //获取浏览器默认的颜色格式
+            const format = navigator.gpu.getPreferredCanvasFormat();
+            const canvas = document.getElementById('webgpu');
+            const context = canvas.getContext('webgpu');
+            context.configure({
+                device: device,//WebGPU渲染器使用的GPU设备对象
+                format: format,//颜色格式
+            });
+
+            //创建顶点缓冲区和渲染管线--------
+            //创建顶点坐标 类型化数组
+            const vertexArray = new Float32Array([
+                // 三角形三个顶点坐标的x、y、z值
+                0.0, 0.0, 0.0,//顶点1坐标
+                1.0, 0.0, 0.0,//顶点2坐标
+                0.0, 1.0, 0.0,//顶点3坐标
+            ]);
+            //创建顶点缓冲区 通过GPU设备对象的.createBuffer() (opens new window)方法可以创建一个顶点缓冲区。
+            const vertexBuffer=device.createBuffer({
+                size:vertexArray.byteLength, //数据字节长度
+                //GPUBufferUsage.VERTEX 表示用于该缓冲区的是顶点缓冲区，就是存储顶点的缓冲区
+                // GPUBufferUsage.COPY_DST COPY-复制的意思 DST-目的地的意思 总-该缓冲区可以写入顶点数据，作为复制顶点数据的目的地
+                usage: GPUBufferUsage.VERTEX | GPUBufferUsage.COPY_DST,
+            })
+
+            //顶点数据写入顶点缓冲区 0-表示从vertexArray获取顶点数据的偏移量（字节单位），0表示从vertexArray的数据开头读取数据
+            device.queue.writeBuffer(vertexBuffer,0,vertexArray)
+           
+
+            
+        } else {
+            console.log('你的浏览器不支持WebGPU，请更换新版本浏览器。');
+        }
+    </script>
+    <!-- canvas：用来展示WebGPU渲染的结果 -->
+    <canvas id="webgpu" width="500" height="500"></canvas>
+</body>
+
+</html>

@@ -42,9 +42,9 @@ export default defineComponent({
 
         }
         let allMethods = {
-            loginIn: () => {
-                console.log('%c ..........111.........','color:#31ef0e',form)
-                changeMenu(menuModel)
+             loginIn: async() => {
+                await changeMenu(menuModel)
+
                 router.push('/home')
             }
         }
