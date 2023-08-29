@@ -21,14 +21,13 @@ export default defineComponent({
         const router = useRouter()
         const route = useRoute()
         // 不许缓存 暂定 操作
-        let excludeList: any = reactive(['p-car','p-showings','p-test','p-city'])
+        let excludeList: any = reactive(['p-car','p-showings','p-test','p-city','t-test'])
         routeList.map((item: any) => {
             if (item.path.includes('operate')) {
                 excludeList.push(item.path.split('p-')[1])
             }
             return
         })
-        console.log('%c ..........excludeList.........','color:red',excludeList)
         const { menu ,setting} = allStore()
         const { sizeData } = setting
 
@@ -97,7 +96,7 @@ export default defineComponent({
             <el-container>
                 <el-aside v-if="!modeType" class="aside-box">
                     <div class="logo"> 后台管理</div>
-                    <AppAside class="app-aside" :menuList="menuList" :isCollapse="isCollapse"></AppAside>
+                    <AppAside class="app-aside" :ellipsis="true" :menuList="menuList" :isCollapse="isCollapse"></AppAside>
                 </el-aside>
                 <el-container>
                     <el-header class="hearder-box">

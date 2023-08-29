@@ -73,7 +73,7 @@ const AppAside = defineComponent({
         }
 
         //路由跳转
-        const handleSelect = (key: string, keyPath: string[]) => {
+        const handleSelect = (key: string, keyPath: string[],item:any,routeResult:any) => {
             const path = key
             router.push({
                 path,
@@ -103,7 +103,7 @@ export default AppAside
  
 <style lang="scss" scoped>
 .el-menu-vertical-demo:not(.el-menu--collapse) {
-    width: 180px;
+    // width: 180px;
     min-height: 400px;
 }
 

@@ -102,6 +102,17 @@ export const menuModel = [
           transition: "slide-left",
         },
       },
+      {
+        path: "three-t-test",
+        name: "cityT",
+        component: () => import("@/pages/views/three/t-test.vue"),
+        meta: {
+          title: "城市glb模型-外联",
+          icon: "HomeFilled",
+          hidden: false,
+          transition: "slide-left",
+        },
+      },
     ],
   },
  
@@ -314,6 +325,7 @@ export const menuModel = [
 // 自动生成路由
 function createRouterFromFile() {
   const children: any = [];
+  const childrenT:any=[]
   const modules = import.meta.glob("../pages/views/*/*");
   const keys = Object.keys(modules);
   for (let i = 0; i < keys.length; i++) {
@@ -331,10 +343,22 @@ function createRouterFromFile() {
         component,
       });
     }
+    if (keys[i].includes("/t-")) {
+      //组件为p-开头会自动添加路由  p-demo p-test p-xxxx  p-cccc-ccc
+      let path = `/${[strArr[2]]}-${strArr[1]}`;
+      let title = `${[strArr[2]]}-${strArr[1]}`;
+      let meta = forFindRouter(path, menuList);
+      childrenT.push({
+        path,
+        title,
+        meta,
+        component,
+      });
+    }
   }
-  console.log("%c ..........children.........", "color:#31ef0e", children);
-  // store.commit('SET_ROUTERCOMPONENTS', children)
-  return children;
+  console.log('%c ..........childrenT.........','color:#31ef0e',childrenT)
+  return [children,childrenT];
+
 }
 
 export const noPath = [
@@ -376,10 +400,11 @@ export const routes: Array<RouteRecordRaw> = [
         },
       },
     
-      ...createRouterFromFile(),
+      ...createRouterFromFile()[0],
       // ...menuModel
     ],
   },
+  ...createRouterFromFile()[1],
   ...noPath,
 ];
 export const routerConfig = createRouter({
