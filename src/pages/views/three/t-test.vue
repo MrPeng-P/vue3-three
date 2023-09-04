@@ -5,6 +5,7 @@ import GLTFLoaderWrapper from "./PPC/model/GLTFLoaderWrapper";
 import pCamera from "./PPC/model/cameraComponent";
 import pLight from "./PPC/model/lightComponent";
 import { useGUI } from "./hooks/useGui";
+import { useFixScreenSize } from "@/utils/useFixScreenSize";
 import TWEEN from "@tweenjs/tween.js";
 
 import { ResourceTracker } from "./PPC/model/ResourceTracker";
@@ -33,6 +34,7 @@ let process = reactive({
   xhr: 0,
   name: "",
 });
+
 /**
  * @desc 设置点击偏移
  * @param
@@ -347,8 +349,11 @@ async function useThree() {
 }
 
 onMounted(async () => {
+  // useFixScreenSize();
+
   const { remove, gui, downImage: threeImge }: any = await useThree();
   downImage = threeImge;
+
   removeThree = remove;
   removeGui = gui.value;
   // useMethods();
@@ -364,18 +369,20 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-  <div ref="container" id="three">
-    <div class="controls-box" id="controls-box">
-      <div class="controls-title">其他操作</div>
-      <div class="controls-item">
-        <div @click="downImage">下载图片(点击文字):</div>
-        <img class="wrapperImage" :src="wrapperImage" alt="" />
-      </div>
-      <div class="controls-item">
-        <div @click="downImage">按键操作:</div>
-        <div>
-          <div>W 相机动画</div>
-          <div>S 相机动画</div>
+  <div class="three-box" id="three-box">
+    <div ref="container" id="three">
+      <div class="controls-box" id="controls-box">
+        <div class="controls-title">其他操作</div>
+        <div class="controls-item">
+          <div @click="downImage">下载图片(点击文字):</div>
+          <img class="wrapperImage" :src="wrapperImage" alt="" />
+        </div>
+        <div class="controls-item">
+          <div @click="downImage">按键操作:</div>
+          <div>
+            <div>W 相机动画</div>
+            <div>S 相机动画</div>
+          </div>
         </div>
       </div>
     </div>
@@ -392,10 +399,29 @@ onBeforeUnmount(() => {
   </div>
 </template>
 <style scoped lang="scss">
+html,
+body {
+  height: 100%;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.three-box{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  width: 1920px;
+}
 #three {
   position: relative;
-  width: 100vw;
-  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  width: 1920px;
 }
 .progress {
   position: absolute;
@@ -420,7 +446,7 @@ onBeforeUnmount(() => {
     margin-top: 10px;
     display: flex;
     justify-content: space-around;
-    font-size: 12px;
+    font-size: 16px;
     .wrapperImage {
       width: 80px;
       height: auto;

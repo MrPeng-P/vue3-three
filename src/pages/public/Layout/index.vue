@@ -26,6 +26,7 @@ export default defineComponent({
             if (item.path.includes('operate')) {
                 excludeList.push(item.path.split('p-')[1])
             }
+            
             return
         })
         const { menu ,setting} = allStore()

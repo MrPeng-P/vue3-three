@@ -11,6 +11,12 @@ import analyze from "rollup-plugin-analyzer"
 import viteCompression from 'vite-plugin-compression';
 const pathSrc = path.resolve(__dirname, 'src')
 import vueJsx from '@vitejs/plugin-vue-jsx'
+import postCssPxToRem from 'postcss-pxtorem'
+
+let pageList = [
+  /src(\\|\/)pages(\\|\/)views(\\|\/)three(\\|\/)t-test/,
+]
+
 
 // https://vitejs.dev/config/
 export default ((mode) => {
@@ -88,7 +94,28 @@ export default ((mode) => {
         scss: {
           additionalData: `@use "~/style/element/index.scss" as *;`
         }
+      },
+      postcss:{
+        plugins:[
+          postCssPxToRem({
+            rootValue:192,
+            propList:['*'],
+            exclude: (e) => {
+              let list = pageList.filter((item, index) => {
+                const itemReg = new RegExp(item)
+                if (itemReg.test(e)) {
+                  return item
+                }
+              })
+              if (list.length > 0) {
+                return false
+              }
+            }
+
+          })
+        ]
       }
+
     },
     server: {
       // 服务器主机名，如果允许外部访问，可设置为"0.0.0.0 "
